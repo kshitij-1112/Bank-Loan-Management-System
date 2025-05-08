@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Loan Product Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+    
+    .container {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+    
+    h2 {
+        color: #3a3a3a;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    
+    h4 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .loan-section {
+        display: none;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 2rem;
+    }
+    
+    /* Personal Loan - Blue Theme */
+    #personal {
+        background-color: #f0f7ff;
+        border: 1px solid #d0e1fd;
+    }
+    
+    #personal h4 {
+        color: #2d62a3;
+    }
+    
+    #personal .table thead {
+        background-color: #4285f4;
+        color: white;
+    }
+    
+    #personal .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(66, 133, 244, 0.05);
+    }
+    
+    /* Home Loan - Green Theme */
+    #home {
+        background-color: #f0fff4;
+        border: 1px solid #d0fdd6;
+    }
+    
+    #home h4 {
+        color: #28a745;
+    }
+    
+    #home .table thead {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    #home .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(40, 167, 69, 0.05);
+    }
+    
+    /* Vehicle Loan - Orange Theme */
+    #vehicle {
+        background-color: #fff8f0;
+        border: 1px solid #fde6d0;
+    }
+    
+    #vehicle h4 {
+        color: #fd7e14;
+    }
+    
+    #vehicle .table thead {
+        background-color: #fd7e14;
+        color: white;
+    }
+    
+    #vehicle .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(253, 126, 20, 0.05);
+    }
+    
+    /* Button Styling */
+    .loan-btn {
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s;
+        padding: 12px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .loan-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-personal {
+        background-color: #4285f4;
+        border-color: #4285f4;
+        color: white;
+    }
+    
+    .btn-personal:hover {
+        background-color: #3367d6;
+        border-color: #3367d6;
+        color: white;
+    }
+    
+    .btn-home {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    
+    .btn-home:hover {
+        background-color: #218838;
+        border-color: #218838;
+        color: white;
+    }
+    
+    .btn-vehicle {
+        background-color: #fd7e14;
+        border-color: #fd7e14;
+        color: white;
+    }
+    
+    .btn-vehicle:hover {
+        background-color: #e96b02;
+        border-color: #e96b02;
+        color: white;
+    }
+    
+    /* Table Styling */
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table th {
+        font-weight: 600;
+    }
+    
+    .table td, .table th {
+        padding: 12px 15px;
+        border-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Highlight Row on Hover */
+    .table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 40px 0;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+</style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="page-header text-center mb-4">
+        <h2 class="mb-2">Loan Product Management</h2>
+        <p class="lead">Explore our comprehensive loan options tailored to your needs</p>
+    </div>
+    
+    <div class="row justify-content-center g-4 mb-4">
+        <div class="col-md-4">
+            <button class="btn loan-btn btn-personal w-100" onclick="showLoan('personal')">
+                <i class="fs-5">🧾</i> Personal Loans
+            </button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn loan-btn btn-home w-100" onclick="showLoan('home')">
+                <i class="fs-5">🏠</i> Home Loans
+            </button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn loan-btn btn-vehicle w-100" onclick="showLoan('vehicle')">
+                <i class="fs-5">🚗</i> Vehicle Loans
+            </button>
+        </div>
+    </div>
+    
+    <!-- Personal Loan Section -->
+    <div id="personal" class="loan-section">
+        <h4><i class="fs-5">🧾</i> Personal Loans</h4>
+        <p class="text-muted">Flexible financing solutions for your personal needs</p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Min Amount</th>
+                        <th>Max Amount</th>
+                        <th>Interest Rate</th>
+                        <th>Tenure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Wedding Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹25,00,000</td>
+                        <td>11% – 16%</td>
+                        <td>12 – 60 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Medical Loan</strong></td>
+                        <td>₹25,000</td>
+                        <td>₹10,00,000</td>
+                        <td>10% – 15%</td>
+                        <td>6 – 48 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Travel Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹5,00,000</td>
+                        <td>11% – 16%</td>
+                        <td>12 – 36 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Education Loan</strong> (Unsecured)</td>
+                        <td>₹1,00,000</td>
+                        <td>₹10,00,000</td>
+                        <td>10% – 14%</td>
+                        <td>12 – 60 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Debt Consolidation Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹15,00,000</td>
+                        <td>12% – 18%</td>
+                        <td>12 – 60 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consumer Durable Loan</strong></td>
+                        <td>₹10,000</td>
+                        <td>₹2,00,000</td>
+                        <td>14% – 24%</td>
+                        <td>6 – 24 months</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Home Loan Section -->
+    <div id="home" class="loan-section">
+        <h4><i class="fs-5">🏠</i> Home Loans</h4>
+        <p class="text-muted">Your dream home is just a loan away</p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Min Amount</th>
+                        <th>Max Amount</th>
+                        <th>Interest Rate</th>
+                        <th>Tenure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Home Purchase Loan</strong></td>
+                        <td>₹5,00,000</td>
+                        <td>₹5,00,00,000</td>
+                        <td>8.0% – 9.5%</td>
+                        <td>60 – 360 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Home Construction Loan</strong></td>
+                        <td>₹5,00,000</td>
+                        <td>₹3,00,00,000</td>
+                        <td>8.2% – 10.0%</td>
+                        <td>60 – 360 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Home Renovation Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹50,00,000</td>
+                        <td>9.0% – 11.5%</td>
+                        <td>12 – 120 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Home Extension Loan</strong></td>
+                        <td>₹1,00,000</td>
+                        <td>₹50,00,000</td>
+                        <td>8.5% – 10.5%</td>
+                        <td>12 – 180 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plot Loan</strong></td>
+                        <td>₹2,00,000</td>
+                        <td>₹2,00,00,000</td>
+                        <td>8.8% – 10.5%</td>
+                        <td>12 – 180 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Balance Transfer Loan</strong></td>
+                        <td>₹1,00,000</td>
+                        <td>Based on existing loan</td>
+                        <td>7.5% – 9.5%</td>
+                        <td>Remaining tenure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NRI Home Loan</strong></td>
+                        <td>₹5,00,000</td>
+                        <td>₹5,00,00,000</td>
+                        <td>8.5% – 10.5%</td>
+                        <td>60 – 240 months</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Vehicle Loan Section -->
+    <div id="vehicle" class="loan-section">
+        <h4><i class="fs-5">🚗</i> Vehicle Loans</h4>
+        <p class="text-muted">Drive your dream vehicle with our affordable financing options</p>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Min Amount</th>
+                        <th>Max Amount</th>
+                        <th>Interest Rate</th>
+                        <th>Tenure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>New Car Loan</strong></td>
+                        <td>₹1,00,000</td>
+                        <td>₹1,00,00,000</td>
+                        <td>8% – 10.5%</td>
+                        <td>12 – 84 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Used Car Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹20,00,000</td>
+                        <td>11% – 15%</td>
+                        <td>12 – 60 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Two-Wheeler Loan</strong></td>
+                        <td>₹10,000</td>
+                        <td>₹10,00,000</td>
+                        <td>9% – 14%</td>
+                        <td>6 – 60 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Commercial Vehicle Loan</strong></td>
+                        <td>₹1,00,000</td>
+                        <td>₹1,00,00,000</td>
+                        <td>10% – 16%</td>
+                        <td>12 – 84 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Electric Vehicle Loan</strong></td>
+                        <td>₹50,000</td>
+                        <td>₹25,00,000</td>
+                        <td>7% – 10%</td>
+                        <td>12 – 84 months</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <p class="small text-muted">Interest rates and loan amounts subject to eligibility criteria and terms & conditions</p>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Show personal loan section by default
+    document.addEventListener('DOMContentLoaded', function() {
+        showLoan('personal');
+    });
+    
+    function showLoan(loanType) {
+        // Hide all sections
+        document.querySelectorAll('.loan-section').forEach(el => el.style.display = 'none');
+        
+        // Show selected
+        document.getElementById(loanType).style.display = 'block';
+        
+        // Scroll to section
+        window.scrollTo({ top: document.getElementById(loanType).offsetTop - 100, behavior: 'smooth' });
+        
+        // Update active state of buttons
+        document.querySelectorAll('.loan-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+</script>
+</body>
+</html>
