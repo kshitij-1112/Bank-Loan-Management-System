@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Loan Product Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+       .loan-section {
+           display: none;
+       }
+</style>
+</head>
+<body>
+<div class="container mt-5 text-center">
+<h2 class="mb-4">Loan Product Management</h2>
+<div class="row justify-content-center g-4">
+<div class="col-md-3">
+<button class="btn btn-outline-primary w-100 p-3" onclick="showLoan('personal')">🧾 Personal Loan</button>
+</div>
+<div class="col-md-3">
+<button class="btn btn-outline-success w-100 p-3" onclick="showLoan('home')">🏠 Home Loan</button>
+</div>
+<div class="col-md-3">
+<button class="btn btn-outline-warning w-100 p-3" onclick="showLoan('vehicle')">🚗 Vehicle Loan</button>
+</div>
+</div>
+<div id="personal" class="loan-section mt-5">
+<h4>🧾 Personal Loans</h4>
+<table class="table table-bordered mt-3">
+<thead class="table-info">
+<tr><th>Type</th><th>Min Amount</th><th>Max Amount</th><th>Interest Rate</th><th>Tenure</th></tr>
+</thead>
+<tbody>
+<tr><td>Wedding Loan</td><td>₹50,000</td><td>₹25,00,000</td><td>11% – 16%</td><td>12 – 60 months</td></tr>
+<tr><td>Medical Loan</td><td>₹25,000</td><td>₹10,00,000</td><td>10% – 15%</td><td>6 – 48 months</td></tr>
+<tr><td>Travel Loan</td><td>₹50,000</td><td>₹5,00,000</td><td>11% – 16%</td><td>12 – 36 months</td></tr>
+<tr><td>Education Loan (Unsecured)</td><td>₹1,00,000</td><td>₹10,00,000</td><td>10% – 14%</td><td>12 – 60 months</td></tr>
+<tr><td>Debt Consolidation Loan</td><td>₹50,000</td><td>₹15,00,000</td><td>12% – 18%</td><td>12 – 60 months</td></tr>
+<tr><td>Consumer Durable Loan</td><td>₹10,000</td><td>₹2,00,000</td><td>14% – 24%</td><td>6 – 24 months</td></tr>
+</tbody>
+</table>
+</div>
+<div id="home" class="loan-section mt-5">
+<h4>🏠 Home Loans</h4>
+<table class="table table-bordered table-striped mt-3">
+<thead class="table-dark">
+<tr><th>Type</th><th>Min Amount</th><th>Max Amount</th><th>Interest Rate</th><th>Tenure</th></tr>
+</thead>
+<tbody>
+<tr><td>Home Purchase Loan</td><td>₹5,00,000</td><td>₹5,00,00,000</td><td>8.0% – 9.5%</td><td>60 – 360 months</td></tr>
+<tr><td>Home Construction Loan</td><td>₹5,00,000</td><td>₹3,00,00,000</td><td>8.2% – 10.0%</td><td>60 – 360 months</td></tr>
+<tr><td>Home Renovation Loan</td><td>₹50,000</td><td>₹50,00,000</td><td>9.0% – 11.5%</td><td>12 – 120 months</td></tr>
+<tr><td>Home Extension Loan</td><td>₹1,00,000</td><td>₹50,00,000</td><td>8.5% – 10.5%</td><td>12 – 180 months</td></tr>
+<tr><td>Plot Loan</td><td>₹2,00,000</td><td>₹2,00,00,000</td><td>8.8% – 10.5%</td><td>12 – 180 months</td></tr>
+<tr><td>Balance Transfer Loan</td><td>₹1,00,000</td><td>Based on existing loan</td><td>7.5% – 9.5%</td><td>Remaining tenure</td></tr>
+<tr><td>NRI Home Loan</td><td>₹5,00,000</td><td>₹5,00,00,000</td><td>8.5% – 10.5%</td><td>60 – 240 months</td></tr>
+</tbody>
+</table>
+</div>
+<div id="vehicle" class="loan-section mt-5">
+<h4>🚗 Vehicle Loans</h4>
+<table class="table table-bordered table-striped mt-3">
+<thead class="table-dark">
+<tr><th>Type</th><th>Min Amount</th><th>Max Amount</th><th>Interest Rate</th><th>Tenure</th></tr>
+</thead>
+<tbody>
+<tr><td>New Car Loan</td><td>₹1,00,000</td><td>₹1,00,00,000</td><td>8% – 10.5%</td><td>12 – 84 months</td></tr>
+<tr><td>Used Car Loan</td><td>₹50,000</td><td>₹20,00,000</td><td>11% – 15%</td><td>12 – 60 months</td></tr>
+<tr><td>Two-Wheeler Loan</td><td>₹10,000</td><td>₹10,00,000</td><td>9% – 14%</td><td>6 – 60 months</td></tr>
+<tr><td>Commercial Vehicle Loan</td><td>₹1,00,000</td><td>₹1,00,00,000</td><td>10% – 16%</td><td>12 – 84 months</td></tr>
+<tr><td>Electric Vehicle Loan</td><td>₹50,000</td><td>₹25,00,000</td><td>7% – 10%</td><td>12 – 84 months</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+   function showLoan(loanType) {
+       // Hide all sections
+       document.querySelectorAll('.loan-section').forEach(el => el.style.display = 'none');
+       // Show selected
+       document.getElementById(loanType).style.display = 'block';
+       // Scroll to section
+       window.scrollTo({ top: document.getElementById(loanType).offsetTop - 100, behavior: 'smooth' });
+   }
+</script>
+</body>
+</html>
