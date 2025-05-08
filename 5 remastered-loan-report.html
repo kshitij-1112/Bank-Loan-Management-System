@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Loan Management Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for better icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #4895ef;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --light-text: #f8f9fa;
+            --border-color: #e9ecef;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-text);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        .card-btn {
+            border-radius: 12px;
+            border: none;
+            padding: 1.5rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .loan-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .repayment-btn {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .outstanding-btn {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .loan-section {
+            display: none;
+            background-color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .loan-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table-container {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .table > :not(caption) > * > * {
+            padding: 1rem 1.5rem;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        thead th {
+            font-weight: 600;
+            border: none !important;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        tbody td {
+            font-weight: 400;
+            vertical-align: middle;
+            border-color: var(--border-color);
+            border-width: 1px 0 0 0;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-approved {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status-rejected {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .pagination {
+            gap: 5px;
+        }
+
+        .pagination .page-link {
+            border-radius: 8px;
+            border: none;
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .empty-state {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+
+        .empty-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .active-button {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Custom theme for different report types */
+        #loan .section-title i {
+            color: var(--primary);
+        }
+
+        #repayment .section-title i {
+            color: var(--success);
+        }
+
+        #outsiding .section-title i {
+            color: var(--warning);
+        }
+
+        #loan thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        #repayment thead {
+            background: linear-gradient(135deg, var(--success) 0%, var(--info) 100%);
+        }
+
+        #outsiding thead {
+            background: linear-gradient(135deg, var(--warning) 0%, #f86fc7 100%);
+        }
+
+        .dashboard-stats {
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stats-icon i {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .primary-bg {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .primary-text {
+            color: var(--primary);
+        }
+
+        .success-bg {
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+
+        .success-text {
+            color: var(--success);
+        }
+
+        .warning-bg {
+            background-color: rgba(247, 37, 133, 0.1);
+        }
+
+        .warning-text {
+            color: var(--warning);
+        }
+
+        .info-bg {
+            background-color: rgba(72, 149, 239, 0.1);
+        }
+
+        .info-text {
+            color: var(--info);
+        }
+
+        /* Sample table data styling */
+        .loan-amount, .payment-amount {
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-btn {
+                margin-bottom: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .header-title {
+                font-size: 1.8rem;
+            }
+            
+            .table-responsive {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <h1 class="header-title text-center">Loan Management Dashboard</h1>
+            <p class="header-subtitle text-center">Comprehensive reporting and auditing system</p>
+        </div>
+    </div>
+
+    <div class="container">
+        
+
+        <!-- Report Type Buttons -->
+        <div class="row justify-content-center g-4 mb-5">
+            <div class="col-md-4">
+                <button id="loanBtn" class="card-btn loan-btn w-100" onclick="showLoan('loan')">
+                    <i class="fas fa-file-invoice"></i>
+                    Loan Report
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button id="repaymentBtn" class="card-btn repayment-btn w-100" onclick="showLoan('repayment')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Repayment Report
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button id="outstandingBtn" class="card-btn outstanding-btn w-100" onclick="showLoan('outsiding')">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Outstanding Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Loan Report Section -->
+        <div id="loan" class="loan-section">
+            <div class="section-header">
+                <h4 class="section-title">
+                    <i class="fas fa-file-invoice"></i> Loan Report
+                </h4>
+                <div class="actions-container">
+                    <button class="btn btn-outline-primary action-btn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button class="btn btn-outline-secondary action-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Loan ID</th>
+                                <th>Name</th>
+                                <th>Loan Type</th>
+                                <th>Amount</th>
+                                <th>App. Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>L-2025-001</td>
+                                <td>John Smith</td>
+                                <td>Home Loan</td>
+                                <td class="loan-amount">$125,000</td>
+                                <td>01/15/2025</td>
+                                <td><span class="status-badge status-approved">Approved</span></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>L-2025-002</td>
+                                <td>Maria Garcia</td>
+                                <td>Personal Loan</td>
+                                <td class="loan-amount">$15,000</td>
+                                <td>01/18/2025</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>L-2025-003</td>
+                                <td>Robert Chen</td>
+                                <td>Vehicle Loan</td>
+                                <td class="loan-amount">$35,000</td>
+                                <td>01/22/2025</td>
+                                <td><span class="status-badge status-approved">Approved</span></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>L-2025-004</td>
+                                <td>Sarah Johnson</td>
+                                <td>Business Loan</td>
+                                <td class="loan-amount">$75,000</td>
+                                <td>01/25/2025</td>
+                                <td><span class="status-badge status-rejected">Rejected</span></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>L-2025-005</td>
+                                <td>David Williams</td>
+                                <td>Home Loan</td>
+                                <td class="loan-amount">$210,000</td>
+                                <td>01/28/2025</td>
+                                <td><span class="status-badge status-approved">Approved</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div>Showing 1 to 5 of 12 entries</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Repayment Report Section -->
+        <div id="repayment" class="loan-section">
+            <div class="section-header">
+                <h4 class="section-title">
+                    <i class="fas fa-money-bill-wave"></i> Repayment Report
+                </h4>
+                <div class="actions-container">
+                    <button class="btn btn-outline-primary action-btn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button class="btn btn-outline-secondary action-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Repayment ID</th>
+                                <th>Name</th>
+                                <th>Loan ID</th>
+                                <th>Amount Due</th>
+                                <th>Payment Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>R-2025-047</td>
+                                <td>John Smith</td>
+                                <td>L-2025-001</td>
+                                <td class="payment-amount">$1,250</td>
+                                <td>04/01/2025</td>
+                                <td><span class="status-badge status-approved">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>R-2025-048</td>
+                                <td>Maria Garcia</td>
+                                <td>L-2025-002</td>
+                                <td class="payment-amount">$450</td>
+                                <td>04/05/2025</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>R-2025-049</td>
+                                <td>Robert Chen</td>
+                                <td>L-2025-003</td>
+                                <td class="payment-amount">$750</td>
+                                <td>04/10/2025</td>
+                                <td><span class="status-badge status-approved">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>R-2025-050</td>
+                                <td>David Williams</td>
+                                <td>L-2025-005</td>
+                                <td class="payment-amount">$1,850</td>
+                                <td>04/12/2025</td>
+                                <td><span class="status-badge status-rejected">Late</span></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>R-2025-051</td>
+                                <td>John Smith</td>
+                                <td>L-2025-001</td>
+                                <td class="payment-amount">$1,250</td>
+                                <td>05/01/2025</td>
+                                <td><span class="status-badge status-pending">Upcoming</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div>Showing 1 to 5 of 14 entries</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Outstanding Report Section -->
+        <div id="outsiding" class="loan-section">
+            <div class="section-header">
+                <h4 class="section-title">
+                    <i class="fas fa-exclamation-circle"></i> Outstanding Report
+                </h4>
+                <div class="actions-container">
+                    <button class="btn btn-outline-primary action-btn">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button class="btn btn-outline-secondary action-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Loan Type</th>
+                                <th>Total Disbursed</th>
+                                <th>Total Repaid</th>
+                                <th>Outstanding Amount</th>
+                                <th>Overdue Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Home Loan</td>
+                                <td class="loan-amount">$950,000</td>
+                                <td class="payment-amount">$275,000</td>
+                                <td class="loan-amount">$675,000</td>
+                                <td class="payment-amount">$12,500</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Personal Loan</td>
+                                <td class="loan-amount">$350,000</td>
+                                <td class="payment-amount">$140,000</td>
+                                <td class="loan-amount">$210,000</td>
+                                <td class="payment-amount">$4,500</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Vehicle Loan</td>
+                                <td class="loan-amount">$425,000</td>
+                                <td class="payment-amount">$210,000</td>
+                                <td class="loan-amount">$215,000</td>
+                                <td class="payment-amount">$8,750</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Business Loan</td>
+                                <td class="loan-amount">$675,000</td>
+                                <td class="payment-amount">$245,000</td>
+                                <td class="loan-amount">$430,000</td>
+                                <td class="payment-amount">$15,750</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Education Loan</td>
+                                <td class="loan-amount">$225,000</td>
+                                <td class="payment-amount">$85,000</td>
+                                <td class="loan-amount">$140,000</td>
+                                <td class="payment-amount">$2,250</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div>Showing 1 to 5 of 5 entries</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show the selected loan report section and highlight the active button
+        function showLoan(loanType) {
+            // Reset all buttons to default state
+            document.getElementById('loanBtn').classList.remove('active-button');
+            document.getElementById('repaymentBtn').classList.remove('active-button');
+            document.getElementById('outstandingBtn').classList.remove('active-button');
+            
+            // Hide all sections
+            const sections = document.querySelectorAll('.loan-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            
+            // Show selected section with animation
+            const selectedSection = document.getElementById(loanType);
+            selectedSection.style.display = 'block';
+            
+            // Highlight the active button
+            if (loanType === 'loan') {
+                document.getElementById('loanBtn').classList.add('active-button');
+            } else if (loanType === 'repayment') {
+                document.getElementById('repaymentBtn').classList.add('active-button');
+            } else if (loanType === 'outsiding') {
+                document.getElementById('outstandingBtn').classList.add('active-button');
+            }
+            
+            // Trigger reflow for animation
+            void selectedSection.offsetWidth;
+            selectedSection.classList.add('active');
+            
+            // Scroll to section
+            window.scrollTo({ 
+                top: selectedSection.offsetTop - 100, 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // Show loan report by default when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            showLoan('loan');
+        });
+    </script>
+</body>
+
+</html>
