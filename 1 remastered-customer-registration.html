@@ -251,13 +251,13 @@
             animation: fadeIn 0.5s ease-in-out;
         }
         
-        @keyframes fadeIn {
+        .keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         /* Responsive adjustments */
-        @media (max-width: 768px) {
+        .media (max-width: 768px) {
             .card-header {
                 padding: 1.5rem;
             }
@@ -392,7 +392,7 @@
             
             // Validate email
             const emailInput = document.getElementById('email');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailRegex = /^[^\s]+[^\s]+\.[^\s]+$/;
             if (!emailRegex.test(emailInput.value)) {
                 emailInput.classList.add('is-invalid');
                 isValid = false;
@@ -470,7 +470,7 @@
                 }
                 
                 if (this.id === 'email' && this.value.trim()) {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    const emailRegex = /^[^\s]+[^\s]+\.[^\s]+$/;
                     if (!emailRegex.test(this.value)) {
                         this.classList.add('is-invalid');
                     } else {
