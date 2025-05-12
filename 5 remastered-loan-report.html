@@ -64,15 +64,15 @@
             gap: 10px;
         }
 
-        .card-btn i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
+            .card-btn i {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
 
-        .card-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
+            .card-btn:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
 
         .loan-btn {
             background-color: var(--primary);
@@ -101,10 +101,10 @@
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        .loan-section.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            .loan-section.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
 
         .section-header {
             display: flex;
@@ -166,13 +166,13 @@
             color: white;
         }
 
-        thead th {
-            font-weight: 600;
-            border: none !important;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
+            thead th {
+                font-weight: 600;
+                border: none !important;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
 
         tbody td {
             font-weight: 400;
@@ -204,21 +204,31 @@
             color: #dc3545;
         }
 
-        .pagination {
-            gap: 5px;
+        .pagination-container {
+            margin-top: 20px;
         }
 
-        .pagination .page-link {
-            border-radius: 8px;
-            border: none;
+        .btn-pagination {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 20px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+            .btn-pagination:hover {
+                background-color: var(--secondary);
+                color: white;
+                border-color: var(--secondary);
+            }
+
+        #showingEntries {
             color: var(--primary);
             font-weight: 500;
-            padding: 0.5rem 1rem;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary);
-            color: white;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
 
         .empty-state {
@@ -280,10 +290,10 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
+            .stats-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            }
 
         .stats-icon {
             width: 60px;
@@ -295,10 +305,10 @@
             margin-bottom: 1rem;
         }
 
-        .stats-icon i {
-            font-size: 1.8rem;
-            color: white;
-        }
+            .stats-icon i {
+                font-size: 1.8rem;
+                color: white;
+            }
 
         .stats-number {
             font-size: 1.8rem;
@@ -350,25 +360,28 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .card-btn {
-                margin-bottom: 1rem;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .header-title {
-                font-size: 1.8rem;
-            }
-            
-            .table-responsive {
-                border: none;
-                box-shadow: none;
-            }
+        .media (max-width: 768px) {
+            .card-btn
+
+        {
+            margin-bottom: 1rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+        }
+
+        .table-responsive {
+            border: none;
+            box-shadow: none;
+        }
+
         }
     </style>
 </head>
@@ -383,7 +396,7 @@
     </div>
 
     <div class="container">
-        
+
 
         <!-- Report Type Buttons -->
         <div class="row justify-content-center g-4 mb-5">
@@ -422,6 +435,24 @@
                     </button>
                 </div>
             </div>
+            <div class="table-control-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <span class="control-label"><i class="fas fa-list-ol me-2"></i>Rows per page:</span>
+                        <select id="rowsPerPage" class="form-select d-inline-block" style="width: 80px;">
+                            <option value="2">2</option>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="search-container" style="width: 300px;">
+                        <input type="text" class="form-control" placeholder="Search reports..." id="searchInput">
+                    </div>
+                </div>
+            </div>
             <div class="table-container">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -436,75 +467,29 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>L-2025-001</td>
-                                <td>John Smith</td>
-                                <td>Home Loan</td>
-                                <td class="loan-amount">$125,000</td>
-                                <td>01/15/2025</td>
-                                <td><span class="status-badge status-approved">Approved</span></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>L-2025-002</td>
-                                <td>Maria Garcia</td>
-                                <td>Personal Loan</td>
-                                <td class="loan-amount">$15,000</td>
-                                <td>01/18/2025</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>L-2025-003</td>
-                                <td>Robert Chen</td>
-                                <td>Vehicle Loan</td>
-                                <td class="loan-amount">$35,000</td>
-                                <td>01/22/2025</td>
-                                <td><span class="status-badge status-approved">Approved</span></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>L-2025-004</td>
-                                <td>Sarah Johnson</td>
-                                <td>Business Loan</td>
-                                <td class="loan-amount">$75,000</td>
-                                <td>01/25/2025</td>
-                                <td><span class="status-badge status-rejected">Rejected</span></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>L-2025-005</td>
-                                <td>David Williams</td>
-                                <td>Home Loan</td>
-                                <td class="loan-amount">$210,000</td>
-                                <td>01/28/2025</td>
-                                <td><span class="status-badge status-approved">Approved</span></td>
-                            </tr>
+                        <tbody id="table-body">
+                            <!-- Rows will be added here by JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <div>Showing 1 to 5 of 12 entries</div>
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+            <div class="d-flex justify-content-center align-items-center pagination-container flex-wrap gap-2 mt-4">
+                <button type="button" class="btn btn-pagination" id="firstPageBtn" title="First Page">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                <button type="button" class="btn btn-pagination" id="prevPageBtn" title="Previous Page">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                <div id="pageNumbers" class="d-flex flex-wrap gap-1"></div>
+                <button type="button" class="btn btn-pagination" id="nextPageBtn" title="Next Page">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                <button type="button" class="btn btn-pagination" id="lastPageBtn" title="Last Page">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </div>
+            <div class="d-flex mt-3">
+                <div id="showingEntries"></div>
             </div>
         </div>
 
@@ -523,6 +508,24 @@
                     </button>
                 </div>
             </div>
+            <div class="table-control-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <span class="control-label"><i class="fas fa-list-ol me-2"></i>Rows per page:</span>
+                        <select id="rowsPerPage" class="form-select d-inline-block" style="width: 80px;">
+                            <option value="2">2</option>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="search-container" style="width: 300px;">
+                        <input type="text" class="form-control" placeholder="Search reports..." id="searchInput">
+                    </div>
+                </div>
+            </div>
             <div class="table-container">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -538,51 +541,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>R-2025-047</td>
-                                <td>John Smith</td>
-                                <td>L-2025-001</td>
-                                <td class="payment-amount">$1,250</td>
-                                <td>04/01/2025</td>
-                                <td><span class="status-badge status-approved">Paid</span></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>R-2025-048</td>
-                                <td>Maria Garcia</td>
-                                <td>L-2025-002</td>
-                                <td class="payment-amount">$450</td>
-                                <td>04/05/2025</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>R-2025-049</td>
-                                <td>Robert Chen</td>
-                                <td>L-2025-003</td>
-                                <td class="payment-amount">$750</td>
-                                <td>04/10/2025</td>
-                                <td><span class="status-badge status-approved">Paid</span></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>R-2025-050</td>
-                                <td>David Williams</td>
-                                <td>L-2025-005</td>
-                                <td class="payment-amount">$1,850</td>
-                                <td>04/12/2025</td>
-                                <td><span class="status-badge status-rejected">Late</span></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>R-2025-051</td>
-                                <td>John Smith</td>
-                                <td>L-2025-001</td>
-                                <td class="payment-amount">$1,250</td>
-                                <td>05/01/2025</td>
-                                <td><span class="status-badge status-pending">Upcoming</span></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -591,19 +549,19 @@
                 <div>Showing 1 to 5 of 14 entries</div>
                 <nav>
                     <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </li>
+                        <button type="button" class="btn btn-pagination" id="firstPageBtn" title="First Page">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-pagination" id="prevPageBtn" title="Previous Page">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        <div id="pageNumbers" class="d-flex flex-wrap gap-1"></div>
+                        <button type="button" class="btn btn-pagination" id="nextPageBtn" title="Next Page">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button type="button" class="btn btn-pagination" id="lastPageBtn" title="Last Page">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
                     </ul>
                 </nav>
             </div>
@@ -624,6 +582,24 @@
                     </button>
                 </div>
             </div>
+            <div class="table-control-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <span class="control-label"><i class="fas fa-list-ol me-2"></i>Rows per page:</span>
+                        <select id="rowsPerPage" class="form-select d-inline-block" style="width: 80px;">
+                            <option value="2">2</option>
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="search-container" style="width: 300px;">
+                        <input type="text" class="form-control" placeholder="Search reports..." id="searchInput">
+                    </div>
+                </div>
+            </div>
             <div class="table-container">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -638,65 +614,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Home Loan</td>
-                                <td class="loan-amount">$950,000</td>
-                                <td class="payment-amount">$275,000</td>
-                                <td class="loan-amount">$675,000</td>
-                                <td class="payment-amount">$12,500</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Personal Loan</td>
-                                <td class="loan-amount">$350,000</td>
-                                <td class="payment-amount">$140,000</td>
-                                <td class="loan-amount">$210,000</td>
-                                <td class="payment-amount">$4,500</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Vehicle Loan</td>
-                                <td class="loan-amount">$425,000</td>
-                                <td class="payment-amount">$210,000</td>
-                                <td class="loan-amount">$215,000</td>
-                                <td class="payment-amount">$8,750</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Business Loan</td>
-                                <td class="loan-amount">$675,000</td>
-                                <td class="payment-amount">$245,000</td>
-                                <td class="loan-amount">$430,000</td>
-                                <td class="payment-amount">$15,750</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Education Loan</td>
-                                <td class="loan-amount">$225,000</td>
-                                <td class="payment-amount">$85,000</td>
-                                <td class="loan-amount">$140,000</td>
-                                <td class="payment-amount">$2,250</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center mt-4">
-                <div>Showing 1 to 5 of 5 entries</div>
+                <div>Showing 1 to 5 of 14 entries</div>
                 <nav>
                     <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </li>
+                        <button type="button" class="btn btn-pagination" id="firstPageBtn" title="First Page">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-pagination" id="prevPageBtn" title="Previous Page">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        <div id="pageNumbers" class="d-flex flex-wrap gap-1"></div>
+                        <button type="button" class="btn btn-pagination" id="nextPageBtn" title="Next Page">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button type="button" class="btn btn-pagination" id="lastPageBtn" title="Last Page">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
                     </ul>
                 </nav>
             </div>
@@ -705,47 +643,198 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         // Show the selected loan report section and highlight the active button
         function showLoan(loanType) {
             // Reset all buttons to default state
-            document.getElementById('loanBtn').classList.remove('active-button');
-            document.getElementById('repaymentBtn').classList.remove('active-button');
-            document.getElementById('outstandingBtn').classList.remove('active-button');
-            
+            $('#loanBtn').removeClass('active-button');
+            $('#repaymentBtn').removeClass('active-button');
+            $('#outstandingBtn').removeClass('active-button');
+
             // Hide all sections
-            const sections = document.querySelectorAll('.loan-section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            });
-            
+            $('.loan-section').hide().removeClass('active');
+
             // Show selected section with animation
-            const selectedSection = document.getElementById(loanType);
-            selectedSection.style.display = 'block';
-            
+            const selectedSection = $('#' + loanType);
+            selectedSection.show();
+
             // Highlight the active button
             if (loanType === 'loan') {
-                document.getElementById('loanBtn').classList.add('active-button');
+                $('#loanBtn').addClass('active-button');
             } else if (loanType === 'repayment') {
-                document.getElementById('repaymentBtn').classList.add('active-button');
+                $('#repaymentBtn').addClass('active-button');
             } else if (loanType === 'outsiding') {
-                document.getElementById('outstandingBtn').classList.add('active-button');
+                $('#outstandingBtn').addClass('active-button');
             }
-            
+
             // Trigger reflow for animation
-            void selectedSection.offsetWidth;
-            selectedSection.classList.add('active');
-            
+            void selectedSection[0].offsetWidth;
+            selectedSection.addClass('active');
+
             // Scroll to section
-            window.scrollTo({ 
-                top: selectedSection.offsetTop - 100, 
-                behavior: 'smooth' 
+            window.scrollTo({
+                top: selectedSection[0].offsetTop - 100,
+                behavior: 'smooth'
             });
         }
-        
+
+        // Loan report data
+        const loanReportData = [
+            { slNo: 1, loanId: 'L-2025-001', name: 'John Smith', loanType: 'Home Loan', amount: 125000, appDate: '01/15/2025', status: 'Approved' },
+            { slNo: 2, loanId: 'L-2025-002', name: 'Maria Garcia', loanType: 'Personal Loan', amount: 15000, appDate: '01/18/2025', status: 'Pending' },
+            { slNo: 3, loanId: 'L-2025-003', name: 'Robert Chen', loanType: 'Vehicle Loan', amount: 35000, appDate: '01/22/2025', status: 'Approved' },
+            { slNo: 4, loanId: 'L-2025-004', name: 'Sarah Johnson', loanType: 'Business Loan', amount: 75000, appDate: '01/25/2025', status: 'Rejected' },
+            { slNo: 5, loanId: 'L-2025-005', name: 'David Williams', loanType: 'Home Loan', amount: 210000, appDate: '01/28/2025', status: 'Approved' },
+            { slNo: 6, loanId: 'L-2025-006', name: 'Emily Davis', loanType: 'Education Loan', amount: 50000, appDate: '02/01/2025', status: 'Pending' },
+            { slNo: 7, loanId: 'L-2025-007', name: 'Michael Brown', loanType: 'Vehicle Loan', amount: 40000, appDate: '02/05/2025', status: 'Approved' },
+            { slNo: 8, loanId: 'L-2025-008', name: 'Jessica Wilson', loanType: 'Personal Loan', amount: 20000, appDate: '02/10/2025', status: 'Pending' },
+            { slNo: 9, loanId: 'L-2025-009', name: 'Daniel Martinez', loanType: 'Home Loan', amount: 180000, appDate: '02/15/2025', status: 'Approved' },
+            { slNo: 10, loanId: 'L-2025-010', name: 'Laura Lee', loanType: 'Business Loan', amount: 60000, appDate: '02/20/2025', status: 'Rejected' },
+            { slNo: 11, loanId: 'L-2025-011', name: 'James Taylor', loanType: 'Education Loan', amount: 45000, appDate: '02/25/2025', status: 'Pending' },
+            { slNo: 12, loanId: 'L-2025-012', name: 'Patricia Anderson', loanType: 'Vehicle Loan', amount: 38000, appDate: '03/01/2025', status: 'Approved' }
+        ];
+
+        $(document).ready(function() {
+            const tableBody = $('#table-body');
+            const rowsPerPageSelect = $('#rowsPerPage');
+            const searchInput = $('#searchInput');
+            const firstPageBtn = $('#firstPageBtn');
+            const prevPageBtn = $('#prevPageBtn');
+            const nextPageBtn = $('#nextPageBtn');
+            const lastPageBtn = $('#lastPageBtn');
+            const pageNumbersContainer = $('#pageNumbers');
+            const showingEntries = $('#showingEntries');
+
+            let currentPage = 1;
+            let rowsPerPage = parseInt(rowsPerPageSelect.val());
+            let filteredData = [...loanReportData];
+
+            // Format currency with dollar sign and commas
+            function formatCurrency(amount) {
+                return '$' + amount.toLocaleString();
+            }
+
+            // Render table rows based on current page and filtered data
+            function renderTable() {
+                tableBody.empty();
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = Math.min(start + rowsPerPage, filteredData.length);
+                const pageData = filteredData.slice(start, end);
+
+                pageData.forEach(row => {
+                    const tr = $('<tr></tr>');
+                    tr.html(`
+                        <td>${row.slNo}</td>
+                        <td>${row.loanId}</td>
+                        <td>${row.name}</td>
+                        <td>${row.loanType}</td>
+                        <td class="loan-amount">${formatCurrency(row.amount)}</td>
+                        <td>${row.appDate}</td>
+                        <td><span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span></td>
+                    `);
+                    tableBody.append(tr);
+                });
+
+                // Update showing entries text
+                if (filteredData.length > 0) {
+                    showingEntries.html(`<i class="fas fa-info-circle me-2"></i>Showing ${start + 1} to ${end} of ${filteredData.length} entries`);
+                } else {
+                    showingEntries.html('<i class="fas fa-info-circle me-2"></i>No matching records found');
+                }
+
+                // Update pagination buttons state
+                firstPageBtn.prop('disabled', currentPage === 1);
+                prevPageBtn.prop('disabled', currentPage === 1);
+                nextPageBtn.prop('disabled', currentPage * rowsPerPage >= filteredData.length);
+                lastPageBtn.prop('disabled', currentPage * rowsPerPage >= filteredData.length);
+
+                renderPageNumbers();
+            }
+
+            // Render page number buttons dynamically
+            function renderPageNumbers() {
+                pageNumbersContainer.empty();
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                const maxPageButtons = 7;
+                let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+                let endPage = startPage + maxPageButtons - 1;
+
+                if (endPage > totalPages) {
+                    endPage = totalPages;
+                    startPage = Math.max(1, endPage - maxPageButtons + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = $('<button></button>')
+                        .addClass('btn btn-pagination')
+                        .text(i)
+                        .attr('data-page', i);
+
+                    if (i === currentPage) {
+                        btn.addClass('active');
+                    }
+
+                    btn.on('click', function() {
+                        currentPage = i;
+                        renderTable();
+                    });
+
+                    pageNumbersContainer.append(btn);
+                }
+            }
+
+            // Event listeners
+            rowsPerPageSelect.on('change', function() {
+                rowsPerPage = parseInt(rowsPerPageSelect.val());
+                currentPage = 1;
+                renderTable();
+            });
+
+            searchInput.on('input', function() {
+                const searchTerm = searchInput.val().toLowerCase();
+                filteredData = loanReportData.filter(row =>
+                    row.loanId.toLowerCase().includes(searchTerm) ||
+                    row.name.toLowerCase().includes(searchTerm) ||
+                    row.loanType.toLowerCase().includes(searchTerm) ||
+                    row.appDate.includes(searchTerm) ||
+                    row.status.toLowerCase().includes(searchTerm) ||
+                    row.amount.toString().includes(searchTerm)
+                );
+                currentPage = 1;
+                renderTable();
+            });
+
+            firstPageBtn.on('click', function() {
+                currentPage = 1;
+                renderTable();
+            });
+
+            prevPageBtn.on('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                }
+            });
+
+            nextPageBtn.on('click', function() {
+                if (currentPage < Math.ceil(filteredData.length / rowsPerPage)) {
+                    currentPage++;
+                    renderTable();
+                }
+            });
+
+            lastPageBtn.on('click', function() {
+                currentPage = Math.ceil(filteredData.length / rowsPerPage);
+                renderTable();
+            });
+
+            // Initial render
+            renderTable();
+        });
+
         // Show loan report by default when page loads
-        window.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             showLoan('loan');
         });
     </script>
