@@ -3,54 +3,388 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <title>Loan Application</title>
+    <title>Loan Application Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #16a085;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #1abc9c;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 30px;
+        }
+
+        .header-container {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 50px auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 100%;
+            margin-top: 90px;
+        }
+
+        .table-control-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 20px auto;
+            width: 100%;
+        }
+
         .table-container {
-            width: 80%; /* Adjust the width as needed */
-            margin: auto;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 20px auto;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .btn-apply {
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+            .btn-apply:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+                color: white;
+            }
+
+        .btn-refresh {
+            background-color: var(--info);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            transition: all 0.3s;
+            margin-right: 30px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(26, 188, 156, 0.2);
+        }
+
+            .btn-refresh:hover {
+                background-color: #16a085;
+                transform: translateY(-2px);
+                color: white;
+            }
+
+            .btn-refresh i {
+                margin-right: 8px;
+            }
+
+        /* Removed duplicate smaller width containers */
+
+        .control-label {
+            color: var(--primary);
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 15px;
+            transition: all 0.3s;
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            }
+
+        #searchInput {
+            padding-left: 35px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            background-size: 15px;
+        }
+
+        .search-container {
+            position: relative;
         }
 
         .table {
-            color: black;
-            background-color: white;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+            .table thead {
+                background: linear-gradient(to right, var(--primary), var(--secondary));
+            }
+
+                .table thead th {
+                    background: linear-gradient(135deg, var(--primary), var(--secondary));
+                    color: white;
+                    font-weight: 600;
+                    border: none;
+                    padding: 15px;
+                    text-transform: uppercase;
+                    font-size: 0.85rem;
+                    letter-spacing: 1px;
+                    vertical-align: middle;
+                }
+
+            .table tbody td {
+                padding: 15px;
+                border: none;
+                border-bottom: 2px solid #f5f7fa;
+                vertical-align: middle;
+            }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .table-bordered {
+            border: 3px solid var(--secondary);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            display: inline-block;
+            font-size: 0.8rem;
+            text-align: center;
+            width: 100px;
+        }
+
+        .status-approved {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-action {
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: var(--warning);
+            border: none;
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background-color: #e67e22;
+                color: white;
+            }
+
+        .btn-delete {
+            background-color: var(--danger);
+            border: none;
+            color: white;
+        }
+
+            .btn-delete:hover {
+                background-color: #c0392b;
+                color: white;
+            }
+
+        .btn-process {
+            background-color: var(--success);
+            border: none;
+            color: white;
+        }
+
+            .btn-process:hover {
+                background-color: #1e8449;
+                color: white;
+            }
+
+        .pagination-container {
+            margin-top: 20px;
+        }
+
+        .btn-pagination {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 20px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+
+            .btn-pagination:hover {
+                background-color: var(--secondary);
+                color: white;
+                border-color: var(--secondary);
+            }
+
+        #showingEntries {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border-bottom: none;
+            padding: 20px 25px;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                font-weight: 500;
+                color: var(--primary);
+                margin-bottom: 8px;
+            }
+
+        .btn-form-submit {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 25px;
+            transition: all 0.3s;
+        }
+
+            .btn-form-submit:hover {
+                background-color: var(--primary);
+                color: white;
+            }
+
+        .btn-form-cancel {
+            background-color: #e0e0e0;
+            color: var(--dark);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 25px;
+            transition: all 0.3s;
+        }
+
+            .btn-form-cancel:hover {
+                background-color: #cccccc;
+            }
+
+        .product-icon {
+            margin-right: 8px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-primary mt" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">Apply for Loan</button>
-    </div>
-    <div class="d-flex">
-        <button type="button" class="btn btn-info ms-auto" id="refreshButton">Refresh</button>
+    <!-- Header -->
+    <div class="header-container">
+        <h1><i class="fas fa-file-invoice-dollar me-3"></i>Loan Application Portal</h1>
+        @* <p class="mb-0">Apply for a new loan or manage your existing applications</p> *@
     </div>
 
-    <div class="table-container">
-        <div class="d-flex justify-content-between mt-3">
-            <div>
-                No. of rows/page:
-                <select id="rowsPerPage" class="form-control d-inline-block w-auto">
+    <!-- Apply Button -->
+    <button type="button" class="btn btn-apply mt-auto" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
+        <i class="fas fa-plus-circle me-2"></i>Apply for Loan
+    </button>
+
+    <!-- Refresh Button -->
+    <div class="d-flex">
+        <button type="button" class="btn btn-refresh ms-auto" id="refreshButton">
+            <i class="fas fa-sync-alt"></i>Refresh
+        </button>
+    </div>
+
+    <!-- Table Controls -->
+    <div class="table-control-container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <span class="control-label"><i class="fas fa-list-ol me-2"></i>Rows per page:</span>
+                <select id="rowsPerPage" class="form-select d-inline-block" style="width: 80px;">
+                    <option value="2">2</option>
+                    <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
                 </select>
             </div>
-            <div>
-                <input type="text" class="form-control" placeholder="Search" id="searchInput">
+            <div class="search-container">
+                <input type="text" class="form-control" placeholder="Search applications..." id="searchInput">
             </div>
         </div>
+    </div>
 
-        <table class="table mt-4 table-striped table-bordered">
-            <thead class="table-dark">
+    <!-- Table -->
+    <div class="table-container">
+        <table class="table table-striped table-bordered">
+            <thead>
                 <tr>
-                    <th scope="col">Application ID</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Loan Amount</th>
-                    <th scope="col">Application Date</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" style="position: sticky; left: 0; z-index: 4; background: linear-gradient(to right, var(--primary), var(--secondary)); min-width: 60px;"><i class="fas fa-hashtag me-2"></i>Application ID</th>
+                    <th scope="col" style="position: sticky; left: 60px; z-index: 4; background: linear-gradient(to right, var(--primary), var(--secondary)); min-width: 120px;"><i class="fas fa-tag me-2"></i>Product</th>
+                    <th scope="col"><i class="fas fa-percentage me-2"></i>Interest Rate</th>
+                    <th scope="col"><i class="fas fa-hourglass-half me-2"></i>Tenure</th>
+                    <th scope="col"><i class="fas fa-rupee-sign me-2"></i>Loan Amount</th>
+                    <th scope="col"><i class="fas fa-calendar-alt me-2"></i>Application Date</th>
+                    <th scope="col"><i class="fas fa-info-circle me-2"></i>Status</th>
+                    <th scope="col"><i class="fas fa-cogs me-2"></i>Actions</th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -58,56 +392,73 @@
             </tbody>
         </table>
 
-        <div class="d-flex justify-content-between mt-3">
-            <div>
-                <button type="button" class="btn btn-secondary" id="firstPageBtn">First Page</button>
-                <button type="button" class="btn btn-secondary" id="prevPageBtn">Previous</button>
-            </div>
-            <div>
-                <button type="button" class="btn btn-secondary" id="nextPageBtn">Next</button>
-                <button type="button" class="btn btn-secondary" id="lastPageBtn">Last Page</button>
-            </div>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center align-items-center pagination-container flex-wrap gap-2">
+            <button type="button" class="btn btn-pagination" id="firstPageBtn" title="First Page">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
+            <button type="button" class="btn btn-pagination" id="prevPageBtn" title="Previous Page">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <div id="pageNumbers" class="d-flex flex-wrap gap-1"></div>
+            <button type="button" class="btn btn-pagination" id="nextPageBtn" title="Next Page">
+                <i class="fas fa-angle-right"></i>
+            </button>
+            <button type="button" class="btn btn-pagination" id="lastPageBtn" title="Last Page">
+                <i class="fas fa-angle-double-right"></i>
+            </button>
         </div>
 
-        <div class="d-flex justify-content-between mt-3">
+        <div class="d-flex mt-3">
             <div id="showingEntries"></div>
         </div>
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="loanApplicationModal" tabindex="-1" aria-labelledby="loanApplicationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loanApplicationModalLabel">Loan Application Form</h5>
+                    <h5 class="modal-title" id="loanApplicationModalLabel">
+                        <i class="fas fa-file-signature me-2"></i>Loan Application Form
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Loan application form content -->
                     <form id="loanApplicationForm">
                         <div class="form-group">
-                            <label for="id">ID:</label>
+                            <label for="id"><i class="fas fa-hashtag me-2"></i>Application ID:</label>
                             <input type="text" id="id" name="id" class="form-control" disabled>
                         </div>
                         <div class="form-group">
-                            <label for="product">Product:</label>
-                            <select id="product" name="product" class="form-control">
-                                <option value="vehicle">Vehicle Loan</option>
-                                <option value="home">Home Loan</option>
-                                <option value="personal">Personal Loan</option>
+                            <label for="product">
+                                <i class="fas fa-tag me-2"></i>Product Type:
+                                <a asp-area="" asp-controller="LoanProduct" asp-action="Product" target="_blank" class="ms-2 text-info" aria-label="More information about product types" title="More information about product types">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </label>
+                            <select id="product" name="product" class="form-select">
+                                <option value="Vehicle Loan">Vehicle Loan</option>
+                                <option value="Home Loan">Home Loan</option>
+                                <option value="Personal Loan">Personal Loan</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="loanAmount">Loan Amount:</label>
-                            <input type="number" id="loanAmount" name="loanAmount" class="form-control">
+                            <label for="loanAmount"><i class="fas fa-rupee-sign me-2"></i>Loan Amount:</label>
+                            <input type="number" id="loanAmount" name="loanAmount" class="form-control" placeholder="Enter loan amount">
                         </div>
                         <div class="form-group">
-                            <label for="applicationDate">Application Date:</label>
+                            <label for="applicationDate"><i class="fas fa-calendar-alt me-2"></i>Application Date:</label>
                             <input type="text" id="applicationDate" name="applicationDate" class="form-control" readonly>
                         </div>
-                        <div class="d-flex justify-content-between mt-3">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-form-submit">
+                                <i class="fas fa-check-circle me-2"></i>Submit
+                            </button>
+                            <button type="button" class="btn btn-form-cancel" data-bs-dismiss="modal">
+                                <i class="fas fa-times-circle me-2"></i>Cancel
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -115,104 +466,422 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <!-- Modal -->
+    <div class="modal fade" id="processApplicationModal" tabindex="-1" aria-labelledby="processApplicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="processApplicationModalLabel">
+                        <i class="fas fa-file-signature me-2"></i>Loan Application Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-borderless mb-3">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="w-50">Application ID:</th>
+                                <td id="processAppId"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">CustomerID:</th>
+                                <td id="processCustId"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Name:</th>
+                                <td id="processName"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Interest Rate:</th>
+                                <td id="processIR"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Tenure:</th>
+                                <td id="processTenure"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Product Type:</th>
+                                <td id="processProduct"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Loan Amount:</th>
+                                <td id="processLoanAmount"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Application Date:</th>
+                                <td id="processApplicationDate"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Approval Status:</th>
+                                <td id="processStatus"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mb-3">
+                        <label for="processStatus" class="form-label"></i>Status:</label>
+                        <select id="processStatus" class="form-select">
+                            <option value="Approve">Approve</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Reject">Reject</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveProcessStatusBtn" data-bs-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        $(document).ready(function() {
-            const tableBody = $('#table-body');
-            const rowsPerPageInput = $('#rowsPerPage');
-            const searchInput = $('#searchInput');
-            const firstPageBtn = $('#firstPageBtn');
-            const prevPageBtn = $('#prevPageBtn');
-            const nextPageBtn = $('#nextPageBtn');
-            const lastPageBtn = $('#lastPageBtn');
-            const showingEntries = $('#showingEntries');
-            const refreshButton = $('#refreshButton');
-            
-            let currentPage = 1;
-            let rowsPerPage = parseInt(rowsPerPageInput.val());
-            let totalRows = 0;
-            let data = [
-                { id: 1, product: 'Vehicle Loan', loanAmount: '1000', applicationDate: '2025-05-01', status: 'Approved' },
-                { id: 2, product: 'Home Loan', loanAmount: '2000', applicationDate: '2025-05-02', status: 'Pending' },
-                // Add more initial data as needed
-            ];
-            totalRows = data.length;
+                $(document).ready(function() {
+                    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    })
 
-            // Render table
-            function renderTable() {
-                tableBody.empty();
-                const start = (currentPage - 1) * rowsPerPage;
-                const end = Math.min(start + rowsPerPage, totalRows);
-                const paginatedData = data.slice(start, end);
+                    const tableBody = $('#table-body');
+                    const rowsPerPageInput = $('#rowsPerPage');
+                    const searchInput = $('#searchInput');
+                    const firstPageBtn = $('#firstPageBtn');
+                    const prevPageBtn = $('#prevPageBtn');
+                    const nextPageBtn = $('#nextPageBtn');
+                    const lastPageBtn = $('#lastPageBtn');
+                    const showingEntries = $('#showingEntries');
+                    const refreshButton = $('#refreshButton');
 
-                paginatedData.forEach(row => {
-                    const tr = $('<tr></tr>');
-                    tr.html(`
-                        <th scope="row">${row.id}</th>
-                        <td>${row.product}</td>
-                        <td>${row.loanAmount}</td>
-                        <td>${row.applicationDate}</td>
-                        <td>${row.status}</td>
-                        <td>
-                            <button type="button" class="btn btn-warning btn-sm" id="edit" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm" id="delete">Delete</button>
-                        </td>
-                    `);
-                    tableBody.append(tr);
+                    let currentPage = 1;
+                    let rowsPerPage = parseInt(rowsPerPageInput.val());
+                    let originalData = [
+                        { id: 1, customerId: 'C001', name: 'John Doe', product: 'Vehicle Loan', loanAmount: '50000', applicationDate: '2025-05-01', status: 'Approved', interestRate: '7.5%', tenure: '5 years' },
+                        { id: 2, customerId: 'C002', name: 'Jane Smith', product: 'Home Loan', loanAmount: '200000', applicationDate: '2025-05-02', status: 'Pending', interestRate: '6.8%', tenure: '15 years' },
+                        { id: 3, customerId: 'C003', name: 'Alice Johnson', product: 'Personal Loan', loanAmount: '30000', applicationDate: '2025-05-03', status: 'Approved', interestRate: '12.0%', tenure: '3 years' },
+                        { id: 4, customerId: 'C004', name: 'Bob Brown', product: 'Business Loan', loanAmount: '100000', applicationDate: '2025-05-04', status: 'Rejected', interestRate: '9.0%', tenure: '7 years' },
+                        { id: 5, customerId: 'C005', name: 'Carol White', product: 'Education Loan', loanAmount: '75000', applicationDate: '2025-05-05', status: 'Pending', interestRate: '5.5%', tenure: '10 years' },
+                        { id: 6, customerId: 'C006', name: 'David Green', product: 'Vehicle Loan', loanAmount: '60000', applicationDate: '2025-05-06', status: 'Approved', interestRate: '7.5%', tenure: '5 years' },
+                        { id: 7, customerId: 'C007', name: 'Eva Black', product: 'Home Loan', loanAmount: '350000', applicationDate: '2025-05-07', status: 'Pending', interestRate: '6.8%', tenure: '15 years' },
+                        { id: 8, customerId: 'C008', name: 'Frank Blue', product: 'Personal Loan', loanAmount: '25000', applicationDate: '2025-05-08', status: 'Rejected', interestRate: '12.0%', tenure: '3 years' }
+                    ];
+                    let data = [...originalData];
+                    let totalRows = data.length;
+
+                    // Get product icon based on loan type
+                    function getProductIcon(product) {
+                        const iconMap = {
+                            'Vehicle Loan': '<i class="fas fa-car product-icon"></i>',
+                            'Home Loan': '<i class="fas fa-home product-icon"></i>',
+                            'Personal Loan': '<i class="fas fa-user product-icon"></i>',
+                            'Business Loan': '<i class="fas fa-briefcase product-icon"></i>',
+                            'Education Loan': '<i class="fas fa-graduation-cap product-icon"></i>'
+                        };
+
+                        return iconMap[product] || '';
+                    }
+
+                    // Format currency with rupee symbol
+                    function formatCurrency(amount) {
+                        return '₹' + parseFloat(amount).toLocaleString('en-IN');
+                    }
+
+                    // Format date to dd-mm-yyyy
+                    function formatDate(dateString) {
+                        const date = new Date(dateString);
+                        return date.toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        }).replace(/\//g, '-');
+                    }
+
+                    // Render table
+                    function renderTable() {
+                        tableBody.empty();
+                        const start = (currentPage - 1) * rowsPerPage;
+                        const end = Math.min(start + rowsPerPage, totalRows);
+                        const paginatedData = data.slice(start, end);
+
+                        paginatedData.forEach(row => {
+                            let statusClass = '';
+                            let statusIcon = '';
+
+                            switch(row.status) {
+                                case 'Approved':
+                                    statusClass = 'status-approved';
+                                    statusIcon = '<i class="fas fa-check-circle me-1"></i>';
+                                    break;
+                                case 'Pending':
+                                    statusClass = 'status-pending';
+                                    statusIcon = '<i class="fas fa-clock me-1"></i>';
+                                    break;
+                                case 'Rejected':
+                                    statusClass = 'status-rejected';
+                                    statusIcon = '<i class="fas fa-times-circle me-1"></i>';
+                                    break;
+                            }
+
+                            const tr = $('<tr></tr>');
+                            tr.html(`
+                                <td>${row.id}</td>
+                            <td>${getProductIcon(row.product)} ${row.product}</td>
+                            <td>${row.interestRate}</td>
+                            <td>${row.tenure}</td>
+                            <td>${formatCurrency(row.loanAmount)}</td>
+                            <td>${formatDate(row.applicationDate)}</td>
+                            <td><span class="status-badge ${statusClass}">${statusIcon}${row.status}</span></td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-action btn-edit" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    <button type="button" class="btn btn-action btn-delete" data-id="${row.id}">
+                                        <i class="fas fa-trash-alt me-1"></i>Delete
+                                    </button>
+        <button type="button" class="btn btn-action btn-process" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#processApplicationModal">
+            Process
+        </button>
+                                </div>
+                            </td>
+                            `);
+                            tableBody.append(tr);
+                        });
+
+                    // Update pagination buttons state
+                    firstPageBtn.prop('disabled', currentPage === 1);
+                    prevPageBtn.prop('disabled', currentPage === 1);
+                    nextPageBtn.prop('disabled', currentPage * rowsPerPage >= totalRows);
+                    lastPageBtn.prop('disabled', currentPage * rowsPerPage >= totalRows);
+
+                    // Render page number buttons
+                    renderPageNumbers();
+
+                    // Update showing entries text
+                    if (totalRows > 0) {
+                        showingEntries.html(`<i class="fas fa-info-circle me-2"></i>Showing ${start + 1} to ${end} of ${totalRows} entries`);
+                    } else {
+                        showingEntries.html('<i class="fas fa-info-circle me-2"></i>No matching records found');
+                    }
+                }
+
+                // Render page number buttons dynamically
+                function renderPageNumbers() {
+                    const pageNumbersContainer = $('#pageNumbers');
+                    pageNumbersContainer.empty();
+
+                    const totalPages = Math.ceil(totalRows / rowsPerPage);
+                    const maxPageButtons = 7; // Max number of page buttons to show
+                    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+                    let endPage = startPage + maxPageButtons - 1;
+
+                    if (endPage > totalPages) {
+                        endPage = totalPages;
+                        startPage = Math.max(1, endPage - maxPageButtons + 1);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        const btn = $('<button></button>')
+                            .addClass('btn btn-pagination')
+                            .text(i)
+                            .attr('data-page', i);
+
+                        if (i === currentPage) {
+                            btn.addClass('active');
+                        }
+
+                        pageNumbersContainer.append(btn);
+                    }
+                }
+
+                // Handle click on page number buttons
+                $(document).on('click', '#pageNumbers button', function() {
+                    const selectedPage = parseInt($(this).attr('data-page'));
+                    if (selectedPage !== currentPage) {
+                        currentPage = selectedPage;
+                        renderTable();
+                    }
                 });
 
-                showingEntries.text(`Showing ${start + 1} to ${end} of ${totalRows} entries`);
-            }
+                    // Navigation buttons
+                    firstPageBtn.click(function() {
+                        currentPage = 1;
+                        renderTable();
+                    });
 
-            firstPageBtn.click(function() {
-                currentPage = 1;
-                renderTable();
-            });
+                    prevPageBtn.click(function() {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderTable();
+                        }
+                    });
 
-            prevPageBtn.click(function() {
-                if (currentPage > 1) {
-                    currentPage--;
+                    nextPageBtn.click(function() {
+                        if (currentPage * rowsPerPage < totalRows) {
+                            currentPage++;
+                            renderTable();
+                        }
+                    });
+
+                    lastPageBtn.click(function() {
+                        currentPage = Math.ceil(totalRows / rowsPerPage);
+                        renderTable();
+                    });
+
+                    // Rows per page change
+                    rowsPerPageInput.change(function() {
+                        rowsPerPage = parseInt(rowsPerPageInput.val());
+                        currentPage = 1;
+                        renderTable();
+                    });
+
+                    // Search functionality
+                    searchInput.on('input', function() {
+                        const searchTerm = searchInput.val().toLowerCase();
+
+                        if (searchTerm === '') {
+                            data = [...originalData];
+                        } else {
+                            data = originalData.filter(row =>
+                                row.product.toLowerCase().includes(searchTerm) ||
+                                row.id.toString().includes(searchTerm) ||
+                                row.status.toLowerCase().includes(searchTerm) ||
+                                row.applicationDate.includes(searchTerm) ||
+                                row.loanAmount.toString().includes(searchTerm)
+                            );
+                        }
+
+                        totalRows = data.length;
+                        currentPage = 1;
+                        renderTable();
+                    });
+
+                    // Refresh button
+                    refreshButton.click(function() {
+                        // Simulate refresh with animation
+                        $(this).find('i').addClass('fa-spin');
+                        setTimeout(() => {
+                            searchInput.val('');
+                            data = [...originalData];
+                            totalRows = data.length;
+                            currentPage = 1;
+                            renderTable();
+                            $(this).find('i').removeClass('fa-spin');
+                        }, 800);
+                    });
+
+                    // Edit button functionality
+                    $(document).on('click', '.btn-edit', function() {
+                        const id = $(this).data('id');
+                        const application = data.find(item => item.id === id);
+
+                        if (application) {
+                            $('#id').val(application.id);
+                            $('#product').val(application.product);
+                            $('#loanAmount').val(application.loanAmount);
+                            $('#applicationDate').val(formatDate(application.applicationDate));
+                        }
+                    });
+
+                    // Process button functionality
+                    $(document).on('click', '.btn-process', function() {
+                        const id = $(this).data('id');
+                        const application = data.find(item => item.id === id);
+
+                        if (application) {
+                            $('#processAppId').text(application.id);
+                            $('#processCustId').text(application.customerId);
+                            $('#processName').text(application.name);
+                            $('#processIR').text(application.interestRate);
+                            $('#processTenure').text(application.tenure);
+                            $('#processProduct').text(application.product);
+                            $('#processLoanAmount').text(formatCurrency(application.loanAmount));
+                            $('#processApplicationDate').text(formatDate(application.applicationDate));
+                            $('#processStatus').val(application.status);
+                        }
+                    });
+
+                    // Delete button functionality
+                    $(document).on('click', '.btn-delete', function() {
+                        const id = $(this).data('id');
+
+                        // Confirm before deleting
+                        if (confirm('Are you sure you want to delete this application?')) {
+                            originalData = originalData.filter(item => item.id !== id);
+                            data = data.filter(item => item.id !== id);
+                            totalRows = data.length;
+
+                            // Reset to first page if current page becomes empty
+                            if (currentPage > Math.ceil(totalRows / rowsPerPage) && currentPage > 1) {
+                                currentPage--;
+                            }
+
+                            renderTable();
+                        }
+                    });
+
+                    // Submit form
+                    $('#loanApplicationForm').submit(function(e) {
+                        e.preventDefault();
+
+                        const id = $('#id').val();
+                        const product = $('#product').val();
+                        const loanAmount = $('#loanAmount').val();
+                        const applicationDate = $('#applicationDate').val();
+
+                        if (!loanAmount || loanAmount <= 0) {
+                            alert('Please enter a valid loan amount');
+                            return;
+                        }
+
+                        if (id) {
+                            // Edit existing application
+                            const index = originalData.findIndex(item => item.id === parseInt(id));
+                            if (index !== -1) {
+                                originalData[index].product = product;
+                                originalData[index].loanAmount = loanAmount;
+
+                                data = [...originalData];
+                                renderTable();
+                            }
+                        } else {
+                            // Add new application
+                            const newId = originalData.length > 0 ? Math.max(...originalData.map(item => item.id)) + 1 : 1;
+                            const newApplication = {
+                                id: newId,
+                                product: product,
+                                loanAmount: loanAmount,
+                                applicationDate: new Date().toISOString().split('T')[0],
+                                status: 'Pending'
+                            };
+
+                            originalData.push(newApplication);
+                            data = [...originalData];
+                            totalRows = data.length;
+
+                            // Go to the last page to see the new entry
+                            currentPage = Math.ceil(totalRows / rowsPerPage);
+                            renderTable();
+                        }
+
+                        // Close modal and reset form
+                        $('#loanApplicationModal').modal('hide');
+                        $('#loanApplicationForm')[0].reset();
+                    });
+
+                    // Open modal for new application
+                    $('#applyForLoanButton').click(function() {
+                        $('#id').val('');
+                        $('#product').val('Vehicle Loan');
+                        $('#loanAmount').val('');
+                        $('#applicationDate').val(formatDate(new Date().toISOString().split('T')[0]));
+                    });
+
+                    // Set the current date for new applications
+                    const today = new Date();
+                    const formattedDate = formatDate(today.toISOString().split('T')[0]);
+                    $('#applicationDate').val(formattedDate);
+
+                    // Initialize the table
                     renderTable();
-                }
-            });
-
-            nextPageBtn.click(function() {
-                if (currentPage * rowsPerPage < totalRows) {
-                    currentPage++;
-                    renderTable();
-                }
-            });
-
-            lastPageBtn.click(function() {
-                currentPage = Math.ceil(totalRows / rowsPerPage);
-                renderTable();
-            });
-
-            rowsPerPageInput.change(function() {
-                rowsPerPage = parseInt(rowsPerPageInput.val());
-                currentPage = 1;
-                renderTable();
-            });
-
-            searchInput.on('input', function() {
-                const searchTerm = searchInput.val().toLowerCase();
-                data = data.filter(row => row.product.toLowerCase().includes(searchTerm));
-                totalRows = data.length;
-                currentPage = 1;
-                renderTable();
-            });
-
-            refreshButton.click(function() {
-                location.reload();
-            });
-
-            renderTable();
-
-            // Set the current date automatically
-            document.getElementById('applicationDate').value = new Date().toLocaleDateString();
-        });
+                });
     </script>
-
 </body>
 </html>
