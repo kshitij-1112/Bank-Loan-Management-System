@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+    }
+    .navbar {
+      background-color: #0d6efd;
+    }
+    .navbar-brand, .nav-link {
+      color: #fff !important;
+    }
+    .table-container {
+      padding: 30px;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+      text-align: center;
+    }
+    .modal-header {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .modal-footer .btn {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Admin</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#">Customer Registration</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Loan Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Application</a></li>
+          <liDisbursement</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Repayment</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <div class="d-flex justify-content-between mb-3">
+      <input type="text" id="search" class="form-control w-25" placeholder="Search...">
+      <button class="btn btn-outline-primary">Filter</button>
+    </div>
+    <table class="table table-bordered table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th>Customer ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Documents</th>
+          <th>KYC Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="customerTable">
+        <!-- Dynamic rows -->
+      </tbody>
+    </table>
+    <nav>
+      <ul class="pagination justify-content-center" id="pagination">
+        <!-- Pagination -->
+      </ul>
+    </nav>
+  </div>
+
+  <!-- KYC Modal -->
+  <div class="modal fade" id="kycModal" tabindex="-1" aria-labelledby="kycModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">KYC Verification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input type="text" id="kycCustomerId" class="form-control mb-2" readonly>
+            <input type="text" id="kycName" class="form-control mb-2" readonly>
+            <input type="email" id="kycEmail" class="form-control mb-2" readonly>
+            <input type="text" id="kycPhone" class="form-control mb-2" readonly>
+            <input type="text" id="kycAddress" class="form-control mb-2" readonly>
+            <input type="text" id="kycDocuments" class="form-control mb-2" readonly>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" id="approveBtn">Approve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const customers = [
+      { id: 1, name: 'John Doe', email: 'john@example.com', phone: '1234567890', address: '123 Main St', documents: 'link1', kycStatus: 'Pending' },
+      { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '9876543210', address: '456 Elm St', documents: 'link2', kycStatus: 'Pending' }
+    ];
+
+    function renderTable() {
+      const tbody = $('#customerTable');
+      tbody.empty();
+      customers.forEach(c => {
+        tbody.append(`
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.name}</td>
+            <td>${c.email}</td>
+            <td>${c.address}</td>
+            <td><a href="#">${c.documents}</a></td>
+            <td>${c.kycStatus}</td>
+            <td>
+              <button class="btn btn-sm btn-primary">Edit</button>
+              <button class="btn btn-sm btn-danger">Delete</button>
+              <button class="btn btn-sm btn-success" onclick="openKYC(${c.id})">Verify</button>
+            </td>
+          </tr>
+        `);
+      });
+    }
+
+    function openKYC(id) {
+      const c = customers.find(c => c.id === id);
+      $('#kycCustomerId').val(c.id);
+      $('#kycName').val(c.name);
+      $('#kycEmail').val(c.email);
+      $('#kycPhone').val(c.phone);
+      $('#kycAddress').val(c.address);
+      $('#kycDocuments').val(c.documents);
+      new bootstrap.Modal(document.getElementById('kycModal')).show();
+    }
+
+    $('#approveBtn').click(() => {
+      const id = parseInt($('#kycCustomerId').val());
+      const c = customers.find(c => c.id === id);
+      c.kycStatus = 'Verified';
+      $('.modal').modal('hide');
+      renderTable();
+      alert('KYC Verified');
+    });
+
+    $(document).ready(() => {
+      renderTable();
+    });
+  </script>
+</body>
+</html>
