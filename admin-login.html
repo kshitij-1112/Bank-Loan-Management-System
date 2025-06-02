@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login Form</title>
+    <!-- Latest Bootstrap 5.3.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Latest Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #16a085;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #1abc9c;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .form-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .form-content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-label i {
+            color: var(--secondary);
+            width: 16px;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            outline: none;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: none;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .is-invalid {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25) !important;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer-text a {
+            color: var(--secondary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 0 10px;
+            }
+            
+            .login-card {
+                margin: 10px 0;
+            }
+            
+            .form-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="login-card">
+            <div class="form-header">
+                <div class="icon-circle">
+                    <i class="fas fa-shield-alt fa-2x"></i>
+                </div>
+                <h1 class="form-title">Admin Login</h1>
+                <p class="form-subtitle">Access your administrative dashboard</p>
+            </div>
+
+            <div class="form-content">
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your admin email" required>
+                        <div class="error-message" id="emailError">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span id="emailErrorText">Please enter a valid email address</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="passwordError">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span id="passwordErrorText">Password is required</span>
+                        </div>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="#">Forgot your password?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="footer-text">
+                    <p>Need help? Contact <a href="#">System Administrator</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest jQuery 3.7.1 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Latest Bootstrap 5.3.2 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Password toggle functionality
+            $('#passwordToggle').on('click', function() {
+                const passwordField = $('#password');
+                const icon = $(this).find('i');
+                
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            // Form validation
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function validatePassword(password) {
+                return password.length >= 6;
+            }
+
+            // Real-time validation
+            $('#email').on('input', function() {
+                const email = $(this).val();
+                if (email && !validateEmail(email)) {
+                    $('#emailError').fadeIn();
+                    $('#emailErrorText').text('Please enter a valid email address');
+                    $(this).addClass('is-invalid');
+                } else if (!email) {
+                    $('#emailError').fadeIn();
+                    $('#emailErrorText').text('Email is required');
+                    $(this).addClass('is-invalid');
+                } else {
+                    $('#emailError').fadeOut();
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            $('#password').on('input', function() {
+                const password = $(this).val();
+                if (!password) {
+                    $('#passwordError').fadeIn();
+                    $('#passwordErrorText').text('Password is required');
+                    $(this).addClass('is-invalid');
+                } else if (password.length < 6) {
+                    $('#passwordError').fadeIn();
+                    $('#passwordErrorText').text('Password must be at least 6 characters');
+                    $(this).addClass('is-invalid');
+                } else {
+                    $('#passwordError').fadeOut();
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // Form submission
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+
+                // Get form values
+                const email = $('#email').val().trim();
+                const password = $('#password').val().trim();
+                
+                // Validate form
+                let isValid = true;
+
+                if (!email) {
+                    $('#emailError').fadeIn();
+                    $('#emailErrorText').text('Email is required');
+                    $('#email').addClass('is-invalid');
+                    isValid = false;
+                } else if (!validateEmail(email)) {
+                    $('#emailError').fadeIn();
+                    $('#emailErrorText').text('Please enter a valid email address');
+                    $('#email').addClass('is-invalid');
+                    isValid = false;
+                }
+
+                if (!password) {
+                    $('#passwordError').fadeIn();
+                    $('#passwordErrorText').text('Password is required');
+                    $('#password').addClass('is-invalid');
+                    isValid = false;
+                } else if (!validatePassword(password)) {
+                    $('#passwordError').fadeIn();
+                    $('#passwordErrorText').text('Password must be at least 6 characters');
+                    $('#password').addClass('is-invalid');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    return;
+                }
+
+                // Show loading state
+                const submitBtn = $('#submitBtn');
+                const spinner = $('#loadingSpinner');
+                const btnText = submitBtn.text().trim();
+                
+                submitBtn.prop('disabled', true);
+                spinner.show();
+                submitBtn.html(`<div class="loading-spinner"></div> Signing In...`);
+
+                // Simulate form submission (replace with actual login logic)
+                setTimeout(() => {
+                    spinner.hide();
+                    submitBtn.prop('disabled', false);
+                    submitBtn.html(`<i class="fas fa-sign-in-alt"></i> Sign In`);
+                    
+                    // Show success message (replace with actual redirect)
+                    alert('Login successful! (This is a demo)');
+                }, 2000);
+            });
+
+            // Remove validation classes on focus
+            $('#loginForm input').on('focus', function() {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').fadeOut();
+            });
+        });
+    </script>
+</body>
+</html>
