@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - LoanMaster Pro</title>
+    
+    <!-- Latest Bootstrap 5.3.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Latest Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #16a085;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #1abc9c;
+            
+            --primary-gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --secondary-gradient: linear-gradient(135deg, var(--secondary), var(--accent));
+            --success-gradient: linear-gradient(135deg, var(--success), var(--info));
+            --warning-gradient: linear-gradient(135deg, var(--warning), #f1c40f);
+            --danger-gradient: linear-gradient(135deg, var(--danger), #c0392b);
+            
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar - Same as Admin Dashboard */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: var(--shadow-md);
+            padding: 1rem 0;
+            margin-bottom: 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-menu {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+            margin-top: 10px;
+        }
+
+        .dropdown-item {
+            color: var(--primary) !important;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--secondary-gradient);
+            color: white !important;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        /* Announcement Cards */
+        .announcement-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .announcement-date {
+            font-size: 0.85rem;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-content {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Loan Products */
+        .loan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--secondary);
+            height: 100%;
+        }
+
+        .loan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .loan-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .loan-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .loan-rate {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .loan-description {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .loan-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .loan-features li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .loan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .btn-loan {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-learn {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+
+        .btn-learn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        /* Resources Section */
+        .resource-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-description {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .btn-resource {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            background: var(--secondary-gradient);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-resource:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        /* FAQ Section */
+        .accordion-item {
+            border: none;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .accordion-button {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            padding: 1.25rem;
+            border: none;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+
+        .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232c3e50'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+        .accordion-button:not(.collapsed)::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+        .accordion-body {
+            padding: 1.25rem;
+            background: white;
+        }
+
+        /* Contact Section */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .contact-text {
+            color: var(--dark);
+        }
+
+        .contact-text strong {
+            display: block;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer-title {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .loan-card, .resource-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-banner {
+                padding: 30px 0;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .loan-icon, .resource-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar - Same as Admin Dashboard -->
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-user-shield me-2"></i>Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-users me-1"></i>Customer Registration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-credit-card me-1"></i>Loan Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-file-alt me-1"></i>Application</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-money-check-alt me-1"></i>Disbursement</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-receipt me-1"></i>Repayment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-chart-bar me-1"></i>Report</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Welcome Banner -->
+    <section class="welcome-banner">
+        <div class="container">
+            <div class="welcome-content">
+                <h1 class="welcome-title fade-in">Welcome to LoanMaster Pro</h1>
+                <p class="welcome-subtitle fade-in">Your one-stop solution for all your financial needs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <!-- Latest Announcements -->
+            <div class="content-card fade-in">
+                <h2 class="section-title">
+                    <i class="fas fa-bullhorn"></i>
+                    Latest Announcements
+                </h2>
+                <div class="announcement-card">
+                    <div class="announcement-date">January 15, 2025</div>
+                    <h3 class="announcement-title">New Mobile Banking App Launch</h3>
+                    <p class="announcement-content">We're excited to announce the launch of our new mobile banking app with enhanced security features and a more intuitive interface. Download now from the App Store or Google Play.</p>
+                    
+                </div>
+                <div class="announcement-card">
+                    <div class="announcement-date">January 10, 2025</div>
+                    <h3 class="announcement-title">Special Interest Rates for Home Loans</h3>
+                    <p class="announcement-content">For a limited time, enjoy reduced interest rates on all home loans. This special offer is valid until February 28, 2025. Contact our loan officers for more details.</p>
+                    
+                </div>
+                <div class="announcement-card">
+                    <div class="announcement-date">January 5, 2025</div>
+                    <h3 class="announcement-title">Holiday Schedule Update</h3>
+                    <p class="announcement-content">Please note that our branches will be closed on January 20, 2025 for the national holiday. Online banking services will remain available 24/7.</p>
+                    
+                </div>
+            </div>
+
+            <!-- Loan Products -->
+            <div class="content-card fade-in">
+                <h2 class="section-title">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Our Loan Products
+                </h2>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="loan-card">
+                            <div class="loan-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <h3 class="loan-title">Home Loans</h3>
+                            <div class="loan-rate">From 6.8% APR</div>
+                            <p class="loan-description">Make your dream home a reality with our competitive home loan options tailored to your needs.</p>
+                            <ul class="loan-features">
+                                <li>Loans up to $1 million</li>
+                                <li>Flexible repayment terms</li>
+                                <li>Low processing fees</li>
+                                <li>Quick approval process</li>
+                            </ul>
+                            <a href="#" class="btn btn-loan btn-learn">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="loan-card">
+                            <div class="loan-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h3 class="loan-title">Auto Loans</h3>
+                            <div class="loan-rate">From 5.9% APR</div>
+                            <p class="loan-description">Drive your dream car today with our hassle-free auto loan options with competitive rates.</p>
+                            <ul class="loan-features">
+                                <li>New and used car financing</li>
+                                <li>Terms up to 84 months</li>
+                                <li>No prepayment penalties</li>
+                                <li>Same-day approval</li>
+                            </ul>
+                            <a href="#" class="btn btn-loan btn-learn">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="loan-card">
+                            <div class="loan-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3 class="loan-title">Personal Loans</h3>
+                            <div class="loan-rate">From 8.5% APR</div>
+                            <p class="loan-description">Get the funds you need for any personal expense with our flexible personal loan options.</p>
+                            <ul class="loan-features">
+                                <li>Loans from $5,000 to $50,000</li>
+                                <li>No collateral required</li>
+                                <li>Fixed monthly payments</li>
+                                <li>Fast online application</li>
+                            </ul>
+                            <a href="#" class="btn btn-loan btn-learn">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="content-card fade-in">
+                <h2 class="section-title">
+                    <i class="fas fa-question-circle"></i>
+                    Frequently Asked Questions
+                </h2>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                How do I apply for a loan?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can apply for a loan through our online application portal, by visiting any of our branch locations, or by calling our customer service line. The online application process is the fastest and typically takes about 15-20 minutes to complete. You'll need to provide personal information, employment details, and financial information.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                What documents are required for loan approval?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The required documents typically include proof of identity (government-issued ID), proof of address (utility bill or bank statement), proof of income (pay stubs or tax returns), and bank statements for the past 3-6 months. For specific loans like auto loans or mortgages, additional documentation related to the asset being financed will be required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                How long does the loan approval process take?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The approval timeline varies by loan type. Personal loans and auto loans can be approved as quickly as the same day or within 1-2 business days. Home loans typically take 30-45 days from application to closing. Business loans may take 1-2 weeks depending on the complexity and amount requested.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Can I pay off my loan early?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can pay off your loan early with LoanMaster Pro. We do not charge prepayment penalties on most of our loan products, allowing you to save on interest by paying ahead of schedule. However, it's always good to check the specific terms of your loan agreement as certain specialized products may have different conditions.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                What factors affect my loan interest rate?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Several factors influence your interest rate, including your credit score, income, debt-to-income ratio, loan amount, loan term, and current market conditions. Having a higher credit score, stable income, and lower debt-to-income ratio typically results in more favorable interest rates.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="content-card fade-in">
+                <h2 class="section-title">
+                    <i class="fas fa-headset"></i>
+                    Contact Us
+                </h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-info">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <strong>Customer Support</strong>
+                                +1 (555) 123-4567
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-info">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <strong>Email Support</strong>
+                                support@loanmasterpro.com
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-info">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                <strong>Business Hours</strong>
+                                Mon-Fri: 9AM - 6PM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h4 class="footer-title">About LoanMaster Pro</h4>
+                    <p class="mb-4">LoanMaster Pro is a leading financial institution providing innovative loan solutions to individuals and businesses since 2010.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Loan Products</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Financial Calculators</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Security Information</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Licensing</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 LoanMaster Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Fade in animations
+            setTimeout(function() {
+                $('.fade-in').addClass('active');
+            }, 300);
+            
+            // Scroll animations
+            $(window).scroll(function() {
+                $('.fade-in').each(function() {
+                    var elementTop = $(this).offset().top;
+                    var elementVisible = 150;
+                    var windowTop = $(window).scrollTop();
+                    var windowHeight = $(window).height();
+                    
+                    if (elementTop < (windowTop + windowHeight - elementVisible)) {
+                        $(this).addClass('active');
+                    }
+                });
+            });
+            
+            // Navbar scroll effect
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 50) {
+                    $('.navbar').css('box-shadow', '0 10px 20px rgba(0, 0, 0, 0.15)');
+                } else {
+                    $('.navbar').css('box-shadow', '0 5px 15px rgba(0, 0, 0, 0.1)');
+                }
+            });
+            
+            // Button click effects
+            $('.btn-loan, .btn-resource').click(function(e) {
+                e.preventDefault();
+                $(this).css('transform', 'scale(0.95)');
+                setTimeout(() => {
+                    $(this).css('transform', '');
+                }, 150);
+                
+                // Show alert for demo purposes
+                const actionText = $(this).text().trim();
+                alert(`${actionText} - This feature will be available soon!`);
+            });
+            
+            // Accordion hover effect
+            $('.accordion-button').hover(
+                function() {
+                    if ($(this).hasClass('collapsed')) {
+                        $(this).css('background-color', '#f8f9fa');
+                    }
+                },
+                function() {
+                    if ($(this).hasClass('collapsed')) {
+                        $(this).css('background-color', 'white');
+                    }
+                }
+            );
+        });
+    </script>
+</body>
+</html>
