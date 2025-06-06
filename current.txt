@@ -518,3 +518,15 @@ input[type="file"].form-control {
     ::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(135deg, var(--primary), var(--secondary));
     }
+
+
+
+.section-divider {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--secondary), rgba(52, 152, 219, 0.2));
+  margin: 8px 0 25px 0;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
