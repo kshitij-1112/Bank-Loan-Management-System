@@ -1,0 +1,106 @@
+@model CustomerManagement.Models.CustomerViewModel
+
+@{
+    ViewBag.Title = "Customer Registration";
+}
+
+<div class="container">
+    <h2></h2>
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">@ViewBag.Success</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Register" asp-controller="Customer" method="post" enctype="multipart/form-data">
+        <!-- Personal Information Section -->
+        <div class="section-header personal">Personal Information</div>
+        <hr class="section-divider">
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="FullName" class="control-label">Full Name</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="Enter your email address" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Phone" class="control-label">Phone Number</label>
+                    <input asp-for="Phone" class="form-control" placeholder="Enter your phone number" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" placeholder="dd-mm-yyyy" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label">Complete Address</label>
+                    <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter your complete address"></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Upload Section -->
+        <div class="section-header document">Document Upload</div>
+        <hr class="section-divider">
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="IdentityType" class="control-label">Identity Document Type</label>
+                    <select asp-for="IdentityType" class="form-select" asp-items="ViewBag.IdentityTypes">
+                        <option value="">Select Identity Document</option>
+                    </select>
+                    <span asp-validation-for="IdentityType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="IdentityProof" class="control-label">Upload Identity Proof</label>
+                    <label for="IdentityProof" class="file-upload-btn">Choose Identity Document</label>
+                    <input asp-for="IdentityProof" type="file" class="form-control" />
+                    <span asp-validation-for="IdentityProof" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label">Create Password</label>
+                    <input asp-for="Password" class="form-control" type="password" placeholder="Create a strong password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <input type="submit" value="Register" class="btn-primary" />
+        </div>
+    </form>
+</div>
