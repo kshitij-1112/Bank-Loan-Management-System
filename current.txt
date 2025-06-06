@@ -521,6 +521,110 @@ input[type="file"].form-control {
 
 
 
+/* Modern Customer Registration Form Styling */
+:root {
+  --primary: #2c3e50;
+  --secondary: #3498db;
+  --accent: #16a085;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  --info: #1abc9c;
+  --border-color: #e0e0e0;
+  --text-color: #333;
+  --placeholder-color: #999;
+  --header-gradient: linear-gradient(90deg, #2c3e50, #3498db);
+  --button-gradient: linear-gradient(90deg, #16a085, #3498db);
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  color: var(--text-color);
+}
+
+/* Container styling */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header styling to match the image */
+h2 {
+  background: var(--header-gradient);
+  color: white;
+  margin: 0;
+  padding: 25px 20px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  position: relative;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2::before {
+  content: "👤+";
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+h2::after {
+  content: "Join our platform and start your journey with us";
+  font-size: 1rem;
+  font-weight: normal;
+  opacity: 0.9;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Form styling */
+form {
+  padding: 20px 30px;
+}
+
+/* Section headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 20px 0 15px 0;
+  position: relative;
+}
+
+.section-header::before {
+  margin-right: 10px;
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.section-header.personal::before {
+  content: "👤";
+}
+
+.section-header.document::before {
+  content: "📄";
+}
+
+/* Section divider */
 .section-divider {
   height: 4px;
   background: linear-gradient(90deg, var(--accent), var(--secondary), rgba(52, 152, 219, 0.2));
@@ -530,3 +634,248 @@ input[type="file"].form-control {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   position: relative;
 }
+
+.section-divider::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 70%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Row layout for two columns */
+.row {
+  display: flex;
+  margin: 0 -10px;
+  flex-wrap: wrap;
+}
+
+.col-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Label styling with icons */
+.control-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+.control-label::before {
+  margin-right: 8px;
+  font-size: 1rem;
+  color: var(--secondary);
+}
+
+.control-label[for="FullName"]::before {
+  content: "👤";
+}
+
+.control-label[for="Email"]::before {
+  content: "✉️";
+}
+
+.control-label[for="Phone"]::before {
+  content: "📞";
+}
+
+.control-label[for="DateOfBirth"]::before {
+  content: "📅";
+}
+
+.control-label[for="Address"]::before {
+  content: "📍";
+}
+
+.control-label[for="IdentityType"]::before {
+  content: "🪪";
+}
+
+.control-label[for="IdentityProof"]::before {
+  content: "📤";
+}
+
+.control-label[for="Password"]::before {
+  content: "🔒";
+}
+
+/* Form controls */
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.form-control::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* File input styling */
+input[type="file"].form-control {
+  display: none;
+}
+
+.file-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 15px;
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.file-upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(22, 160, 133, 0.3);
+}
+
+.file-upload-btn::before {
+  content: "📤";
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+/* Button styling */
+.btn-primary {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Alert messages */
+.alert {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: rgba(39, 174, 96, 0.1);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  color: var(--success);
+}
+
+.alert-danger {
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: var(--danger);
+}
+
+/* Validation errors */
+.text-danger {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Utility classes */
+.mt-3 {
+  margin-top: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .container {
+    margin: 0 15px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    padding: 20px 15px;
+  }
+
+  h2::after {
+    font-size: 0.9rem;
+  }
+
+  form {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.3rem;
+    padding: 15px;
+  }
+
+  h2::after {
+    font-size: 0.8rem;
+  }
+
+  .section-header {
+    font-size: 1.1rem;
+  }
+
+  form {
+    padding: 10px 15px;
+  }
+
+  .form-control,
+  .form-select,
+  .file-upload-btn {
+    padding: 10px 12px;
+  }
+}
+
