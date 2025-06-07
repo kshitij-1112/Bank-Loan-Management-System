@@ -1,0 +1,116 @@
+@model CustomerManagement.Models.EditCustomerViewModel
+
+<form asp-action="Edit" method="post" id="editForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="FullName">
+                    <i class="fas fa-user"></i> Full Name
+                </label>
+                <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Email">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email address" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Phone">
+                    <i class="fas fa-phone"></i> Phone
+                </label>
+                <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DateOfBirth">
+                    <i class="fas fa-calendar"></i> Date of Birth
+                </label>
+                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Address">
+            <i class="fas fa-map-marker-alt"></i> Address
+        </label>
+        <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter complete address"></textarea>
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="IdentityType">
+                    <i class="fas fa-id-card"></i> Identity Type
+                </label>
+                <input asp-for="IdentityType" class="form-control" placeholder="Enter identity type" />
+                <span asp-validation-for="IdentityType" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="KycStatus">
+                    <i class="fas fa-check-circle"></i> KYC Status
+                </label>
+                <select asp-for="KycStatus" class="form-control">
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Verified">Verified</option>
+                </select>
+                <span asp-validation-for="KycStatus" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+    </div>
+</form>
+
+<script>
+    $('#editForm').submit(function (e) {
+        e.preventDefault();
+        
+        const submitBtn = $(this).find('.btn-primary');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+        submitBtn.prop('disabled', true);
+        
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/Edit',
+            data: $(this).serialize(),
+            success: function () {
+                $('#editModal').modal('hide');
+                location.reload(); // Refresh dashboard to reflect changes
+            },
+            error: function() {
+                alert('Error updating customer. Please try again.');
+                submitBtn.html(originalText);
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+</script>
