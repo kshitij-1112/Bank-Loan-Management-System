@@ -47,90 +47,84 @@
 
 <!-- Table Container -->
 <div class="table-container">
-    <!-- Added table wrapper for scrolling -->
-    <div class="table-wrapper">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th><i class="fas fa-id-badge"></i> Customer ID</th>
-                    <th><i class="fas fa-user"></i> Name</th>
-                    <th><i class="fas fa-envelope"></i> Email</th>
-                    <th><i class="fas fa-map-marker-alt"></i> Address</th>
-                    <th><i class="fas fa-file-pdf"></i> Documents</th>
-                    <th><i class="fas fa-check-circle"></i> KYC Status</th>
-                    <th class="actions-column"><i class="fas fa-cogs"></i> Actions</th>
-                </tr>
-            </thead>
-            <tbody id="customerTableBody">
-                @foreach (var customer in Model)
-                {
-                    <tr class="customer-row" data-customer-id="@customer.Id" data-original-id="@customer.Id" data-kyc-status="@customer.KycStatus.ToLower()">
-                        <td><span class="customer-id">#@customer.Id</span></td>
-                        <td><strong>@customer.FullName</strong></td>
-                        <td>@customer.Email</td>
-                        <td>@customer.Address</td>
-                        <td>
-                            <a href="@customer.DocumentPath" target="_blank" class="document-link">
-                                documents/@(customer.FullName.ToLower().Replace(" ", "_"))_kyc.pdf
-                            </a>
-                        </td>
-                        <td>
-                            @if (customer.KycStatus == "Approved" || customer.KycStatus == "Verified")
-                            {
-                                <span class="status-badge status-verified">
-                                    <i class="fas fa-check-circle"></i> Verified
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="status-badge status-pending">
-                                    <i class="fas fa-clock"></i> @customer.KycStatus
-                                </span>
-                            }
-                        </td>
-                        <td class="actions-cell">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" onclick="openEditModal(@customer.Id, '@customer.KycStatus')">
-                                    <i class="fas fa-edit"></i>
-                                    <span>Edit</span>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-id-badge"></i> Customer ID</th>
+                <th><i class="fas fa-user"></i> Name</th>
+                <th><i class="fas fa-envelope"></i> Email</th>
+                <th><i class="fas fa-map-marker-alt"></i> Address</th>
+                <th><i class="fas fa-file-pdf"></i> Documents</th>
+                <th><i class="fas fa-check-circle"></i> KYC Status</th>
+                <th class="actions-column"><i class="fas fa-cogs"></i> Actions</th>
+            </tr>
+        </thead>
+        <tbody id="customerTableBody">
+            @foreach (var customer in Model)
+            {
+                <tr class="customer-row" data-customer-id="@customer.Id" data-original-id="@customer.Id" data-kyc-status="@customer.KycStatus.ToLower()">
+                    <td><span class="customer-id">#@customer.Id</span></td>
+                    <td><strong>@customer.FullName</strong></td>
+                    <td>@customer.Email</td>
+                    <td>@customer.Address</td>
+                    <td>
+                        <a href="@customer.DocumentPath" target="_blank" class="document-link">
+                            documents/@(customer.FullName.ToLower().Replace(" ", "_"))_kyc.pdf
+                        </a>
+                    </td>
+                    <td>
+                        @if (customer.KycStatus == "Approved" || customer.KycStatus == "Verified")
+                        {
+                            <span class="status-badge status-verified">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-pending">
+                                <i class="fas fa-clock"></i> @customer.KycStatus
+                            </span>
+                        }
+                    </td>
+                    <td class="actions-cell">
+                        <div class="action-buttons">
+                            <button class="btn-action btn-edit" onclick="openEditModal(@customer.Id, '@customer.KycStatus')">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit</span>
+                            </button>
+                            <form asp-action="Delete" method="post" style="display:inline;" onsubmit="handleFormSubmit(event)">
+                                <input type="hidden" name="id" value="@customer.Id" />
+                                <button type="submit" class="btn-action btn-delete" 
+                                        onclick="return confirm('Are you sure you want to delete this customer?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Delete</span>
                                 </button>
-                                <form asp-action="Delete" method="post" style="display:inline;" onsubmit="handleFormSubmit(event)">
-                                    <input type="hidden" name="id" value="@customer.Id" />
-                                    <button type="submit" class="btn-action btn-delete" 
-                                            onclick="return confirm('Are you sure you want to delete this customer?');">
-                                        <i class="fas fa-trash-alt"></i>
-                                        <span>Delete</span>
-                                    </button>
-                                </form>
-                                <form asp-action="Verify" method="post" style="display:inline;" onsubmit="handleFormSubmit(event)">
-                                    <input type="hidden" name="id" value="@customer.Id" />
-                                    <button type="submit" class="btn-action btn-verify">
-                                        <i class="fas fa-user-check"></i>
-                                        <span>Verify</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                            </form>
+                            <form asp-action="Verify" method="post" style="display:inline;" onsubmit="handleFormSubmit(event)">
+                                <input type="hidden" name="id" value="@customer.Id" />
+                                <button type="submit" class="btn-action btn-verify">
+                                    <i class="fas fa-user-check"></i>
+                                    <span>Verify</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-    <!-- Pagination Container with fixed height -->
-    <div class="pagination-container">
-        <!-- Pagination Info -->
-        <div class="pagination-info" id="paginationInfo">
-            <!-- Pagination info will be generated by JavaScript -->
-        </div>
-        
-        <!-- Bootstrap Pagination -->
-        <nav aria-label="Customer pagination">
-            <ul class="pagination justify-content-center" id="paginationContainer">
-                <!-- Pagination buttons will be generated by JavaScript -->
-            </ul>
-        </nav>
+    <!-- Pagination Info -->
+    <div class="pagination-info" id="paginationInfo">
+        <!-- Pagination info will be generated by JavaScript -->
     </div>
+    
+    <!-- Bootstrap Pagination -->
+    <nav aria-label="Customer pagination">
+        <ul class="pagination justify-content-center" id="paginationContainer">
+            <!-- Pagination buttons will be generated by JavaScript -->
+        </ul>
+    </nav>
 </div>
 
 <!-- Edit Modal -->
@@ -158,12 +152,16 @@
         let allRows = [];
         let filteredRows = [];
         let currentScrollPosition = 0;
+        let tableHeight = 0;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Restore saved state first
             restoreSavedState();
             initializeTable();
+            
+            // Store initial table height to maintain consistency
+            tableHeight = document.querySelector('.table-container').offsetHeight;
         });
 
         function restoreSavedState() {
@@ -240,6 +238,12 @@
             setTimeout(() => {
                 window.scrollTo(0, currentScrollPosition);
             }, 10);
+            
+            // Ensure table container maintains consistent height
+            const tableContainer = document.querySelector('.table-container');
+            if (tableContainer.offsetHeight < tableHeight) {
+                tableContainer.style.minHeight = tableHeight + 'px';
+            }
         }
 
         function updatePagination(totalPages, totalRows, startIndex, endIndex) {
