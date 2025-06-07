@@ -13,9 +13,6 @@
   --pagination-border: #495057;
   --pagination-bg: #f8f9fa;
   --pagination-active-bg: #3498db;
-  --table-container-height: 700px; /* Fixed height for table container */
-  --table-body-height: 550px; /* Fixed height for table body */
-  --pagination-height: 100px; /* Fixed height for pagination */
 }
 
 body {
@@ -165,7 +162,7 @@ body {
   box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
 }
 
-/* Table Container - Fixed height to prevent layout shifts */
+/* Table Container */
 .table-container {
   background-color: white;
   border-radius: 12px;
@@ -175,17 +172,9 @@ body {
   max-width: 96%;
   overflow: hidden;
   border: 4px solid var(--primary);
-  height: var(--table-container-height); /* Fixed height */
+  min-height: 400px; /* Minimum height to prevent layout shifts */
   display: flex;
   flex-direction: column;
-}
-
-/* Table Wrapper - To enable scrolling */
-.table-wrapper {
-  flex: 1;
-  overflow: auto;
-  height: var(--table-body-height); /* Fixed height */
-  position: relative;
 }
 
 /* Table Styling */
@@ -194,15 +183,11 @@ body {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  table-layout: fixed; /* Fixed table layout */
 }
 
 /* Table Header - Matching the image */
 .table thead {
   background: var(--table-header-bg);
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .table thead th {
@@ -218,7 +203,7 @@ body {
   vertical-align: middle;
   position: relative;
   text-align: left;
-  height: 60px; /* Fixed height for header */
+  white-space: nowrap; /* Prevent header text wrapping */
 }
 
 .table thead th:first-child {
@@ -239,35 +224,12 @@ body {
   min-width: 220px;
 }
 
-/* Fixed column widths */
-.table th:nth-child(1) {
-  width: 10%;
-}
-.table th:nth-child(2) {
-  width: 15%;
-}
-.table th:nth-child(3) {
-  width: 15%;
-}
-.table th:nth-child(4) {
-  width: 15%;
-}
-.table th:nth-child(5) {
-  width: 15%;
-}
-.table th:nth-child(6) {
-  width: 10%;
-}
-.table th:nth-child(7) {
-  width: 20%;
-}
-
 .table tbody td {
   padding: 18px 15px;
   border: 1px solid #e0e0e0;
   border-top: none;
   vertical-align: middle;
-  height: 80px; /* Fixed height for rows */
+  word-break: break-word; /* Allow text to wrap within cells */
 }
 
 .table tbody td:first-child {
@@ -420,22 +382,10 @@ body {
   box-shadow: 0 4px 8px rgba(46, 213, 115, 0.3);
 }
 
-/* Pagination Container - Fixed height to prevent layout shifts */
-.pagination-container {
-  background-color: #f8f9fa;
-  padding: 20px 0;
-  border-top: 1px solid #e0e0e0;
-  height: var(--pagination-height); /* Fixed height */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 /* Enhanced Bootstrap Pagination Styling */
 .pagination {
-  margin: 0;
+  margin: 15px 0;
   gap: 8px;
-  justify-content: center;
 }
 
 .pagination .page-item {
@@ -502,7 +452,7 @@ body {
 
 /* Pagination Info */
 .pagination-info {
-  padding: 10px 20px 0;
+  padding: 0 20px 10px;
   color: var(--primary);
   font-weight: 500;
   font-size: 0.9rem;
@@ -767,4 +717,34 @@ body {
 .table-container,
 .table-controls {
   transition: none !important;
+}
+
+/* Column width adjustments to prevent overflow */
+.table th:nth-child(1) {
+  width: 8%;
+} /* Customer ID */
+.table th:nth-child(2) {
+  width: 15%;
+} /* Name */
+.table th:nth-child(3) {
+  width: 15%;
+} /* Email */
+.table th:nth-child(4) {
+  width: 17%;
+} /* Address */
+.table th:nth-child(5) {
+  width: 15%;
+} /* Documents */
+.table th:nth-child(6) {
+  width: 10%;
+} /* KYC Status */
+.table th:nth-child(7) {
+  width: 20%;
+} /* Actions */
+
+/* Ensure table cells don't overflow */
+.table td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
