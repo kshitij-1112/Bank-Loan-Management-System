@@ -1,0 +1,15 @@
+/* Add this CSS rule after the existing pagination styles to highlight the active page button */
+.pagination .page-item.active .page-link {
+  background-color: var(--pagination-active-bg);
+  color: white;
+  border-color: var(--secondary);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+  font-weight: 800;
+}
+
+.pagination .page-item.active .page-link:hover {
+  background-color: var(--secondary);
+  color: white;
+  border-color: var(--primary);
+}
