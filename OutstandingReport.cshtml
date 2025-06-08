@@ -1,18 +1,18 @@
-@model List<BankLoanProject.Models.RepaymentReportViewModel>
+@model List<BankLoanProject.Models.OutstandingReportViewModel>
 @{
     var role = Context.Session.GetString("Role");
 }
 
-<!-- Repayment Report Section -->
-<div id="repayment" class="report-section table-container">
+<!-- Outstanding Report Section -->
+<div id="outstanding" class="report-section table-container">
     <div class="section-header">
         <div class="section-info">
-            <span class="badge bg-success mb-2">Repayment Reports</span>
+            <span class="badge bg-warning mb-2">Outstanding Reports</span>
             <h4 class="mb-2">
-                <i class="fas fa-receipt me-2"></i>
-                Repayment Report
+                <i class="fas fa-money-bill-wave me-2"></i>
+                Outstanding Loans Report
             </h4>
-            <p class="text-muted">Monitor loan repayment schedules and payment history.</p>
+            <p class="text-muted">Track outstanding loan balances and payment status.</p>
         </div>
         <div class="export-filter-controls">
             <button class="btn btn-export" id="btnExport">
@@ -24,14 +24,12 @@
                     <i class="fas fa-filter"></i> Filter
                 </button>
                 <div class="dropdown-menu p-3">
-                    <label class="fw-bold">By Payment Date:</label>
-                    <input type="date" id="paymentDateFilter" class="form-control mb-2">
-
-                    <label class="fw-bold">By Status:</label>
-                    <select id="statusFilter" class="form-control mb-2">
+                    <label class="fw-bold">By Loan Type:</label>
+                    <select id="loanTypeFilter" class="form-control mb-2">
                         <option value="">All</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Completed">Completed</option>
+                        <option value="Home">Home</option>
+                        <option value="Vehicle">Vehicle</option>
+                        <option value="Personal">Personal</option>
                     </select>
 
                     <button class="btn btn-success mt-2 w-100" id="btnApplyFilter">Apply</button>
@@ -61,42 +59,40 @@
                 <span class="input-group-text">
                     <i class="fas fa-search"></i>
                 </span>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search repayment reports..." oninput="searchReports()">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search outstanding reports..." oninput="searchReports()">
             </div>
         </div>
     </div>
 
     <div class="table-wrapper">
-        <table class="table" id="repaymentReportTable">
+        <table class="table" id="outstandingReportTable">
             <thead>
                 <tr>
-                    <th><i class="fas fa-hashtag"></i> Repayment ID</th>
+                    <th><i class="fas fa-hashtag"></i> Loan ID</th>
                     @if (role == "Admin")
                     {
                         <th><i class="fas fa-user"></i> Customer ID</th>
                         <th><i class="fas fa-user-tag"></i> Customer Name</th>
                     }
-                    <th><i class="fas fa-hashtag"></i> Loan ID</th>
-                    <th><i class="fas fa-money-bill-wave"></i> Amount Due</th>
-                    <th><i class="fas fa-calendar-alt"></i> Due Date</th>
-                    <th><i class="fas fa-calendar-check"></i> Payment Date</th>
-                    <th><i class="fas fa-check-circle"></i> Status</th>
+                    <th><i class="fas fa-tag"></i> Product Type</th>
+                    <th><i class="fas fa-file-signature"></i> Product Name</th>
+                    <th><i class="fas fa-money-bill-wave"></i> Loan Amount</th>
+                    <th><i class="fas fa-exclamation-triangle"></i> Outstanding Balance</th>
                 </tr>
             </thead>
             <tbody class="report-table-body">
                 @foreach (var report in Model)
                 {
                     <tr class="report-row">
-                        <td><strong>@report.RepaymentId</strong></td>
+                        <td><strong>@report.LoanId</strong></td>
                         @if (role == "Admin"){
                             <td>@report.CustomerId</td>
                             <td><strong>@report.CustomerName</strong></td>
                         }
-                        <td>@report.LoanId</td>
-                        <td><span class="amount">@report.AmountDue.ToString("C")</span></td>
-                        <td>@report.DueDate.ToString("dd/MM/yyyy")</td>
-                        <td>@(report.PaymentDate.HasValue ? report.PaymentDate.Value.ToString("dd/MM/yyyy") : "Not Paid")</td>
-                        <td><span class="@(report.PaymentStatus == "Completed" ? "status-completed" : "status-pending")">@report.PaymentStatus</span></td>
+                        <td>@report.ProductType</td>
+                        <td>@report.ProductName</td>
+                        <td><span class="amount">@report.LoanAmount.ToString("C")</span></td>
+                        <td><span class="amount">@report.OutstandingBalance.ToString("C")</span></td>
                     </tr>
                 }
             </tbody>
@@ -105,11 +101,11 @@
 
     <!-- Pagination Section -->
     <div class="pagination-section">
-        <div class="pagination-info" id="repaymentPaginationInfo">
+        <div class="pagination-info" id="outstandingPaginationInfo">
             <!-- Pagination info will be generated by JavaScript -->
         </div>
-        <nav aria-label="Repayment report pagination">
-            <ul class="pagination" id="repaymentPaginationContainer">
+        <nav aria-label="Outstanding report pagination">
+            <ul class="pagination" id="outstandingPaginationContainer">
                 <!-- Pagination buttons will be generated by JavaScript -->
             </ul>
         </nav>
@@ -123,7 +119,7 @@ $(document).ready(function () {
 
     // Export Table as PDF
     $("#btnExport").click(function () {
-        exportToPDF('repaymentReportTable', 'Repayment_Report');
+        exportToPDF('outstandingReportTable', 'Outstanding_Loans_Report');
     });
 
     // Apply Filters
@@ -150,36 +146,23 @@ function initializePagination() {
 }
 
 function applyFilters() {
-    let selectedStatus = $("#statusFilter").val().toLowerCase();
-    let paymentDate = $("#paymentDateFilter").val();
+    let selectedLoanType = $("#loanTypeFilter").val().toLowerCase();
 
     filteredRows = allRows.filter(row => {
         const cells = row.querySelectorAll('td');
         const role = '@role';
-        let status, rowPaymentDate;
+        let loanType;
 
         if (role === "Admin") {
-            status = cells[7].textContent.trim().toLowerCase();
-            rowPaymentDate = cells[6].textContent.trim();
+            loanType = cells[3].textContent.trim().toLowerCase();
         } else {
-            status = cells[5].textContent.trim().toLowerCase();
-            rowPaymentDate = cells[4].textContent.trim();
+            loanType = cells[1].textContent.trim().toLowerCase();
         }
 
         let showRow = true;
 
-        if (selectedStatus && status !== selectedStatus) {
+        if (selectedLoanType && loanType !== selectedLoanType) {
             showRow = false;
-        }
-
-        if (paymentDate && rowPaymentDate !== "Not Paid") {
-            let dateParts = rowPaymentDate.split("/");
-            if (dateParts.length === 3) {
-                let formattedRowDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                if (paymentDate !== formattedRowDate) {
-                    showRow = false;
-                }
-            }
         }
 
         return showRow;
@@ -190,8 +173,7 @@ function applyFilters() {
 }
 
 function clearFilters() {
-    $("#statusFilter").val("");
-    $("#paymentDateFilter").val("");
+    $("#loanTypeFilter").val("");
     $("#searchInput").val("");
     
     filteredRows = [...allRows];
@@ -243,8 +225,8 @@ function updateTable() {
 }
 
 function updatePagination(totalPages, totalRows, startIndex, endIndex) {
-    const paginationContainer = document.getElementById('repaymentPaginationContainer');
-    const paginationInfo = document.getElementById('repaymentPaginationInfo');
+    const paginationContainer = document.getElementById('outstandingPaginationContainer');
+    const paginationInfo = document.getElementById('outstandingPaginationInfo');
 
     // Clear existing pagination
     paginationContainer.innerHTML = '';
@@ -329,7 +311,7 @@ function exportToPDF(tableId, filename) {
     
     // Add title
     doc.setFontSize(16);
-    doc.text('Repayment Report', 14, 15);
+    doc.text('Outstanding Loans Report', 14, 15);
     
     // Add date
     doc.setFontSize(10);
