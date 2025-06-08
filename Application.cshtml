@@ -70,14 +70,14 @@
                     @if (role == "Admin")
                     {
                         <th scope="col"><i class="fas fa-hashtag me-1"></i>Customer ID</th>
-                        <th scope="col"><i class="fas fa-user me-1"></i>Customer Name</th>
+                        <th scope="col"><i class="fas fa-user me-1"></i>Name</th>
                     }
                     <th scope="col"><i class="fas fa-tag me-1"></i>Product Type</th>
                     <th scope="col"><i class="fas fa-box me-1"></i>Product Name</th>
-                    <th scope="col"><i class="fas fa-percentage me-1"></i>Interest Rate</th>
+                    <th scope="col"><i class="fas fa-percentage me-1"></i>Rate</th>
                     <th scope="col"><i class="fas fa-hourglass-half me-1"></i>Tenure</th>
-                    <th scope="col"><i class="fas fa-rupee-sign me-1"></i>Loan Amount</th>
-                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i>Application Date</th>
+                    <th scope="col"><i class="fas fa-rupee-sign me-1"></i>Amount</th>
+                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i>Date</th>
                     <th scope="col"><i class="fas fa-info-circle me-1"></i>Status</th>
                     @if (role == "Admin")
                     {
@@ -96,30 +96,7 @@
                                 <td><strong>@app.CustomerId</strong></td>
                                 <td><strong>@app.Name</strong></td>
                             }
-                            <td>
-                                @{
-                                    string productIcon = "";
-                                    switch(app.ProductType?.ToLower())
-                                    {
-                                        case "vehicle":
-                                        case "vehicle loan":
-                                            productIcon = "fas fa-car";
-                                            break;
-                                        case "home":
-                                        case "home loan":
-                                            productIcon = "fas fa-home";
-                                            break;
-                                        case "personal":
-                                        case "personal loan":
-                                            productIcon = "fas fa-user";
-                                            break;
-                                        default:
-                                            productIcon = "fas fa-tag";
-                                            break;
-                                    }
-                                }
-                                <i class="@productIcon product-icon"></i><strong>@app.ProductType</strong>
-                            </td>
+                            <td><strong>@app.ProductType</strong></td>
                             <td><strong>@app.ProductName</strong></td>
                             <td><strong>@app.InterestRate?.ToString()%</strong></td>
                             <td><strong>@app.LoanTenure months</strong></td>
@@ -618,7 +595,7 @@
                 }),
                 success: function (response) {
                     // Update the status in the table without page reload
-                    updateStatusInTable(currentCustomerId, newStatus);
+                    updateStatusInTable(currentApplicationId, newStatus);
                     
                     // Close modal
                     $('#processApplicationModal').modal('hide');
@@ -638,8 +615,8 @@
         });
 
         // Function to update status in table without page reload
-        function updateStatusInTable(customerId, newStatus) {
-            const row = document.querySelector(`[data-customer-id="${customerId}"]`).closest('tr');
+        function updateStatusInTable(applicationId, newStatus) {
+            const row = document.querySelector(`[data-application-id="${applicationId}"]`);
             if (row) {
                 const statusCell = row.querySelector('.status-badge');
                 if (statusCell) {
