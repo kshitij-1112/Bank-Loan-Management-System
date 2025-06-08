@@ -279,60 +279,111 @@
     }
 
     function initializeModal() {
-        const paymentModal = document.getElementById('paymentModal');
-        paymentModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            
-            // Get data from button attributes
-            currentRepaymentId = button.getAttribute('data-repayment-id');
-            const loanId = button.getAttribute('data-loan-id');
-            const productType = button.getAttribute('data-product-type');
-            const productName = button.getAttribute('data-product-name');
-            const amount = button.getAttribute('data-amount');
-            const dueDate = button.getAttribute('data-due-date');
-            
-            // Populate modal with data
-            document.getElementById('repaymentId').value = currentRepaymentId;
-            document.getElementById('modalRepaymentId').textContent = currentRepaymentId;
-            document.getElementById('modalLoanId').textContent = loanId;
-            document.getElementById('modalProductType').textContent = productType;
-            document.getElementById('modalProductName').textContent = productName;
-            document.getElementById('modalDueDate').textContent = dueDate;
-            document.getElementById('modalAmount').textContent = '₹' + parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
-        });
-    }
+    const paymentModal = document.getElementById('paymentModal');
+    
+    // Handle modal show event
+    paymentModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        
+        // Get data from button attributes
+        currentRepaymentId = button.getAttribute('data-repayment-id');
+        const loanId = button.getAttribute('data-loan-id');
+        const productType = button.getAttribute('data-product-type');
+        const productName = button.getAttribute('data-product-name');
+        const amount = button.getAttribute('data-amount');
+        const dueDate = button.getAttribute('data-due-date');
+        
+        // Populate modal with data
+        document.getElementById('repaymentId').value = currentRepaymentId;
+        document.getElementById('modalRepaymentId').textContent = currentRepaymentId;
+        document.getElementById('modalLoanId').textContent = loanId;
+        document.getElementById('modalProductType').textContent = productType;
+        document.getElementById('modalProductName').textContent = productName;
+        document.getElementById('modalDueDate').textContent = dueDate;
+        document.getElementById('modalAmount').textContent = '₹' + parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+    });
+    
+    // Handle modal hide event to ensure cleanup
+    paymentModal.addEventListener('hidden.bs.modal', function(event) {
+        // Reset form
+        const form = document.getElementById('paymentForm');
+        if (form) {
+            form.reset();
+        }
+        
+        // Reset button
+        const submitBtn = form.querySelector('.btn-confirm');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Confirm Payment';
+            submitBtn.disabled = false;
+        }
+        
+        // Ensure backdrop is removed
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('padding-right');
+    });
+}
 
     function initializeFormHandlers() {
-        // Payment form submission
-        document.getElementById('paymentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = this.querySelector('.btn-confirm');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
-            submitBtn.disabled = true;
-            
-            // Simulate payment processing
-            setTimeout(() => {
+    // Payment form submission - Fixed to prevent freezing
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('.btn-confirm');
+        const originalText = submitBtn.innerHTML;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        
+        // Validate payment method
+        if (!paymentMethod) {
+            alert('Please select a payment method');
+            return;
+        }
+        
+        // Disable button and show loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        submitBtn.disabled = true;
+        
+        // Simulate payment processing
+        setTimeout(() => {
+            try {
                 // Update the status in the table
                 updatePaymentStatusInTable(currentRepaymentId, 'COMPLETED');
                 
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                modal.hide();
+                // Reset button first
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Reset and close modal properly
+                this.reset();
+                const modalElement = document.getElementById('paymentModal');
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Remove any lingering backdrop
+                setTimeout(() => {
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('padding-right');
+                }, 300);
                 
                 // Show success message
                 showSuccessMessage('Payment processed successfully!');
                 
-                // Reset button
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                // Reset button on error
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-                
-                // Reset form
-                this.reset();
-            }, 2000);
-        });
-    }
+                alert('Error processing payment. Please try again.');
+            }
+        }, 2000);
+    });
+}
 
     function updatePaymentStatusInTable(repaymentId, newStatus) {
         const row = document.querySelector(`[data-repayment-id="${repaymentId}"]`);
@@ -362,20 +413,36 @@
     }
 
     function showSuccessMessage(message) {
-        // Create and show success alert
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-success';
-        alertDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-        
-        // Insert after dashboard header
-        const header = document.querySelector('.dashboard-header');
-        header.parentNode.insertBefore(alertDiv, header.nextSibling);
-        
-        // Auto-hide after 5 seconds
+    // Remove any existing success messages first
+    const existingAlerts = document.querySelectorAll('.alert-success');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    // Create and show success alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success';
+    alertDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    alertDiv.style.opacity = '0';
+    alertDiv.style.transition = 'opacity 0.3s ease-in-out';
+    
+    // Insert after dashboard header
+    const header = document.querySelector('.dashboard-header');
+    header.parentNode.insertBefore(alertDiv, header.nextSibling);
+    
+    // Fade in
+    setTimeout(() => {
+        alertDiv.style.opacity = '1';
+    }, 100);
+    
+    // Auto-hide after 5 seconds with fade out
+    setTimeout(() => {
+        alertDiv.style.opacity = '0';
         setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
-    }
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 300);
+    }, 5000);
+}
 
     function applyFilters() {
         let rows = [...allRows];
