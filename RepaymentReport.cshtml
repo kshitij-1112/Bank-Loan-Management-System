@@ -1,0 +1,380 @@
+@model List<BankLoanProject.Models.RepaymentReportViewModel>
+@{
+    var role = Context.Session.GetString("Role");
+}
+
+<!-- Repayment Report Section -->
+<div id="repayment" class="report-section table-container">
+    <div class="section-header">
+        <div class="section-info">
+            <span class="badge bg-success mb-2">Repayment Reports</span>
+            <h4 class="mb-2">
+                <i class="fas fa-receipt me-2"></i>
+                Repayment Report
+            </h4>
+            <p class="text-muted">Monitor loan repayment schedules and payment history.</p>
+        </div>
+        <div class="export-filter-controls">
+            <button class="btn btn-export" id="btnExport">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </button>
+            <!-- Filter Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <div class="dropdown-menu p-3">
+                    <label class="fw-bold">By Payment Date:</label>
+                    <input type="date" id="paymentDateFilter" class="form-control mb-2">
+
+                    <label class="fw-bold">By Status:</label>
+                    <select id="statusFilter" class="form-control mb-2">
+                        <option value="">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+
+                    <button class="btn btn-success mt-2 w-100" id="btnApplyFilter">Apply</button>
+                    <button class="btn btn-danger mt-2 w-100" id="btnClearFilter">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Controls - Fixed Layout -->
+    <div class="table-controls">
+        <!-- Left side - Rows per page -->
+        <div class="rows-control">
+            <label for="rowsPerPage">
+                <i class="fas fa-list-ol"></i>
+                Rows per page:
+            </label>
+            <select id="rowsPerPage" class="form-select" onchange="changeRowsPerPage()">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <!-- Right side - Search -->
+        <div class="search-control">
+            <div class="input-group search-input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search repayment reports..." oninput="searchReports()">
+            </div>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table" id="repaymentReportTable">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> Repayment ID</th>
+                    @if (role == "Admin")
+                    {
+                        <th><i class="fas fa-user"></i> Customer ID</th>
+                        <th><i class="fas fa-user-tag"></i> Customer Name</th>
+                    }
+                    <th><i class="fas fa-hashtag"></i> Loan ID</th>
+                    <th><i class="fas fa-money-bill-wave"></i> Amount Due</th>
+                    <th><i class="fas fa-calendar-alt"></i> Due Date</th>
+                    <th><i class="fas fa-calendar-check"></i> Payment Date</th>
+                    <th><i class="fas fa-check-circle"></i> Status</th>
+                </tr>
+            </thead>
+            <tbody class="report-table-body">
+                @foreach (var report in Model)
+                {
+                    <tr class="report-row">
+                        <td><strong>@report.RepaymentId</strong></td>
+                        @if (role == "Admin"){
+                            <td>@report.CustomerId</td>
+                            <td><strong>@report.CustomerName</strong></td>
+                        }
+                        <td>@report.LoanId</td>
+                        <td><span class="amount">@report.AmountDue.ToString("C")</span></td>
+                        <td>@report.DueDate.ToString("dd/MM/yyyy")</td>
+                        <td>@(report.PaymentDate.HasValue ? report.PaymentDate.Value.ToString("dd/MM/yyyy") : "Not Paid")</td>
+                        <td><span class="@(report.PaymentStatus == "Completed" ? "status-completed" : "status-pending")">@report.PaymentStatus</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Section -->
+    <div class="pagination-section">
+        <div class="pagination-info" id="repaymentPaginationInfo">
+            <!-- Pagination info will be generated by JavaScript -->
+        </div>
+        <nav aria-label="Repayment report pagination">
+            <ul class="pagination" id="repaymentPaginationContainer">
+                <!-- Pagination buttons will be generated by JavaScript -->
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Initialize pagination
+    setTimeout(initializePagination, 100);
+
+    // Export Table as PDF
+    $("#btnExport").click(function () {
+        exportToPDF('repaymentReportTable', 'Repayment_Report');
+    });
+
+    // Apply Filters
+    $("#btnApplyFilter").click(function () {
+        applyFilters();
+    });
+
+    // Clear Filters
+    $("#btnClearFilter").click(function () {
+        clearFilters();
+    });
+});
+
+// Global variables for pagination
+let currentPage = 1;
+let rowsPerPage = 5;
+let allRows = [];
+let filteredRows = [];
+
+function initializePagination() {
+    allRows = Array.from(document.querySelectorAll('.report-row'));
+    filteredRows = [...allRows];
+    updateTable();
+}
+
+function applyFilters() {
+    let selectedStatus = $("#statusFilter").val().toLowerCase();
+    let paymentDate = $("#paymentDateFilter").val();
+
+    filteredRows = allRows.filter(row => {
+        const cells = row.querySelectorAll('td');
+        const role = '@role';
+        let status, rowPaymentDate;
+
+        if (role === "Admin") {
+            status = cells[7].textContent.trim().toLowerCase();
+            rowPaymentDate = cells[6].textContent.trim();
+        } else {
+            status = cells[5].textContent.trim().toLowerCase();
+            rowPaymentDate = cells[4].textContent.trim();
+        }
+
+        let showRow = true;
+
+        if (selectedStatus && status !== selectedStatus) {
+            showRow = false;
+        }
+
+        if (paymentDate && rowPaymentDate !== "Not Paid") {
+            let dateParts = rowPaymentDate.split("/");
+            if (dateParts.length === 3) {
+                let formattedRowDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                if (paymentDate !== formattedRowDate) {
+                    showRow = false;
+                }
+            }
+        }
+
+        return showRow;
+    });
+
+    currentPage = 1;
+    updateTable();
+}
+
+function clearFilters() {
+    $("#statusFilter").val("");
+    $("#paymentDateFilter").val("");
+    $("#searchInput").val("");
+    
+    filteredRows = [...allRows];
+    currentPage = 1;
+    updateTable();
+}
+
+function searchReports() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (searchTerm === '') {
+        filteredRows = [...allRows];
+    } else {
+        filteredRows = allRows.filter(row => {
+            const text = row.textContent.toLowerCase();
+            return text.includes(searchTerm);
+        });
+    }
+    
+    currentPage = 1;
+    updateTable();
+}
+
+function changeRowsPerPage() {
+    rowsPerPage = parseInt(document.getElementById('rowsPerPage').value);
+    currentPage = 1;
+    updateTable();
+}
+
+function updateTable() {
+    // Hide all rows first
+    allRows.forEach(row => row.style.display = 'none');
+
+    // Calculate pagination
+    const totalRows = filteredRows.length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+
+    // Show current page rows
+    for (let i = startIndex; i < endIndex; i++) {
+        if (filteredRows[i]) {
+            filteredRows[i].style.display = '';
+        }
+    }
+
+    // Update pagination controls
+    updatePagination(totalPages, totalRows, startIndex, endIndex);
+}
+
+function updatePagination(totalPages, totalRows, startIndex, endIndex) {
+    const paginationContainer = document.getElementById('repaymentPaginationContainer');
+    const paginationInfo = document.getElementById('repaymentPaginationInfo');
+
+    // Clear existing pagination
+    paginationContainer.innerHTML = '';
+
+    if (totalPages <= 1) {
+        const singleBtn = createPaginationButton('1', 1, false, true);
+        paginationContainer.appendChild(singleBtn);
+    } else {
+        // First page button
+        const firstBtn = createPaginationButton('«', 1, currentPage === 1);
+        paginationContainer.appendChild(firstBtn);
+
+        // Previous page button
+        const prevBtn = createPaginationButton('‹', currentPage - 1, currentPage === 1);
+        paginationContainer.appendChild(prevBtn);
+
+        // Page number buttons
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageBtn = createPaginationButton(i, i, false, i === currentPage);
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        // Next page button
+        const nextBtn = createPaginationButton('›', currentPage + 1, currentPage === totalPages);
+        paginationContainer.appendChild(nextBtn);
+
+        // Last page button
+        const lastBtn = createPaginationButton('»', totalPages, currentPage === totalPages);
+        paginationContainer.appendChild(lastBtn);
+    }
+
+    // Update pagination info
+    if (totalRows > 0) {
+        paginationInfo.innerHTML = `
+            <i class="fas fa-info-circle"></i>
+            Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries
+        `;
+    } else {
+        paginationInfo.innerHTML = `
+            <i class="fas fa-info-circle"></i>
+            No matching records found
+        `;
+    }
+}
+
+function createPaginationButton(text, page, disabled, active = false) {
+    const li = document.createElement('li');
+    li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+
+    const button = document.createElement('a');
+    button.className = 'page-link';
+    button.innerHTML = text;
+    button.href = '#';
+
+    if (!disabled) {
+        button.onclick = (e) => {
+            e.preventDefault();
+            goToPage(page);
+        };
+    }
+
+    li.appendChild(button);
+    return li;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    updateTable();
+}
+
+function exportToPDF(tableId, filename) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(16);
+    doc.text('Repayment Report', 14, 15);
+    
+    // Add date
+    doc.setFontSize(10);
+    doc.text('Generated on: ' + new Date().toLocaleDateString(), 14, 25);
+    
+    // Get table data
+    const table = document.getElementById(tableId);
+    const headers = [];
+    const data = [];
+    
+    // Extract headers
+    table.querySelectorAll('thead th').forEach(th => {
+        headers.push(th.textContent.trim());
+    });
+    
+    // Extract visible rows data
+    table.querySelectorAll('tbody tr').forEach(tr => {
+        if (tr.style.display !== 'none') {
+            const row = [];
+            tr.querySelectorAll('td').forEach(td => {
+                row.push(td.textContent.trim());
+            });
+            data.push(row);
+        }
+    });
+    
+    // Generate table
+    doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 35,
+        styles: {
+            fontSize: 8,
+            cellPadding: 2
+        },
+        headStyles: {
+            fillColor: [44, 62, 80],
+            textColor: 255
+        }
+    });
+    
+    // Save the PDF
+    const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+    doc.save(`${filename}_${timestamp}.pdf`);
+}
+</script>
