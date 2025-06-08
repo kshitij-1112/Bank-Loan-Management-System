@@ -21,7 +21,7 @@
 <!-- Apply Button - Centered -->
 @if (role == "Customer")
 {
-    <div class="text-center">
+    <div class="apply-button-container">
         <button type="button" class="btn btn-apply" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
             <i class="fas fa-plus-circle me-2"></i>Apply for Loan
         </button>
@@ -64,20 +64,20 @@
 <!-- Table -->
 <div class="table-container">
     <div class="table-wrapper">
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     @if (role == "Admin")
                     {
                         <th scope="col"><i class="fas fa-hashtag me-1"></i>Customer ID</th>
-                        <th scope="col"><i class="fas fa-user me-1"></i>Name</th>
+                        <th scope="col"><i class="fas fa-user me-1"></i>Customer Name</th>
                     }
                     <th scope="col"><i class="fas fa-tag me-1"></i>Product Type</th>
                     <th scope="col"><i class="fas fa-box me-1"></i>Product Name</th>
-                    <th scope="col"><i class="fas fa-percentage me-1"></i>Rate</th>
+                    <th scope="col"><i class="fas fa-percentage me-1"></i>Interest Rate</th>
                     <th scope="col"><i class="fas fa-hourglass-half me-1"></i>Tenure</th>
-                    <th scope="col"><i class="fas fa-rupee-sign me-1"></i>Amount</th>
-                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i>Date</th>
+                    <th scope="col"><i class="fas fa-rupee-sign me-1"></i>Loan Amount</th>
+                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i>Application Date</th>
                     <th scope="col"><i class="fas fa-info-circle me-1"></i>Status</th>
                     @if (role == "Admin")
                     {
@@ -94,7 +94,7 @@
                             @if(role == "Admin")
                             {
                                 <td><strong>@app.CustomerId</strong></td>
-                                <td>@app.Name</td>
+                                <td><strong>@app.Name</strong></td>
                             }
                             <td>
                                 @{
@@ -118,13 +118,13 @@
                                             break;
                                     }
                                 }
-                                <i class="@productIcon product-icon"></i>@app.ProductType
+                                <i class="@productIcon product-icon"></i><strong>@app.ProductType</strong>
                             </td>
-                            <td>@app.ProductName</td>
-                            <td>@app.InterestRate?.ToString()%</td>
-                            <td>@app.LoanTenure months</td>
+                            <td><strong>@app.ProductName</strong></td>
+                            <td><strong>@app.InterestRate?.ToString()%</strong></td>
+                            <td><strong>@app.LoanTenure months</strong></td>
                             <td><span class="amount">₹@app.LoanAmount?.ToString("N0")</span></td>
-                            <td>@app.ApplicationDate?.ToString("dd-MM-yyyy")</td>
+                            <td><strong>@app.ApplicationDate?.ToString("dd-MM-yyyy")</strong></td>
                             <td>
                                 @{
                                     string statusClass = "";
@@ -156,11 +156,21 @@
                             @if(role == "Admin")
                             {
                                 <td>
-                                    <div class="d-flex gap-1">
-                                        <button type="button" class="btn btn-action btn-process" data-id="@app.CustomerId" data-bs-toggle="modal" data-bs-target="#processApplicationModal">
-                                            <i class="fas fa-cogs me-1"></i>Process
-                                        </button>
-                                    </div>
+                                    <button type="button" class="btn btn-process" 
+                                            data-customer-id="@app.CustomerId"
+                                            data-application-id="@app.ApplicationId"
+                                            data-name="@app.Name"
+                                            data-product-type="@app.ProductType"
+                                            data-product-name="@app.ProductName"
+                                            data-interest-rate="@app.InterestRate"
+                                            data-tenure="@app.LoanTenure"
+                                            data-amount="@app.LoanAmount"
+                                            data-date="@app.ApplicationDate?.ToString("dd-MM-yyyy")"
+                                            data-status="@app.ApprovalStatus"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#processApplicationModal">
+                                        <i class="fas fa-cogs me-1"></i>Process
+                                    </button>
                                 </td>
                             }
                         </tr>
@@ -168,7 +178,7 @@
                 }
                 else
                 {
-                    <tr><td colspan="10" class="text-center">No applications found.</td></tr>
+                    <tr><td colspan="10" class="text-center"><strong>No applications found.</strong></td></tr>
                 }
             </tbody>
         </table>
@@ -187,7 +197,7 @@
     </div>
 </div>
 
-<!-- Loan Application Modal - Large Size -->
+<!-- Loan Application Modal - Center Aligned -->
 <div class="modal fade" id="loanApplicationModal" tabindex="-1" aria-labelledby="loanApplicationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <form id="loanApplicationForm" method="post" asp-action="ApplyForLoan" asp-controller="LoanApplication">
@@ -261,97 +271,103 @@
     </div>
 </div>
 
-<!-- Process Application Modal - Large Size -->
+<!-- Process Application Modal - Center Aligned -->
 <div class="modal fade" id="processApplicationModal" tabindex="-1" aria-labelledby="processApplicationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="processApplicationModalLabel">
-                    <i class="fas fa-file-signature me-2"></i>Loan Application Details
+                    <i class="fas fa-file-signature me-2"></i>Process Loan Application
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <table class="table table-borderless mb-3">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-hashtag me-2"></i>Customer ID:
-                                    </th>
-                                    <td id="processCustId"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-user me-2"></i>Name:
-                                    </th>
-                                    <td id="processName"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-percentage me-2"></i>Interest Rate:
-                                    </th>
-                                    <td id="processIR"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-hourglass-half me-2"></i>Tenure:
-                                    </th>
-                                    <td id="processTenure"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-tag me-2"></i>Product Type:
-                                    </th>
-                                    <td id="processProduct"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <table class="table table-borderless mb-3">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-box me-2"></i>Product Name:
-                                    </th>
-                                    <td id="processProductName"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-rupee-sign me-2"></i>Loan Amount:
-                                    </th>
-                                    <td id="processLoanAmount"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-calendar-alt me-2"></i>Application Date:
-                                    </th>
-                                    <td id="processApplicationDate"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="w-50">
-                                        <i class="fas fa-info-circle me-2"></i>Current Status:
-                                    </th>
-                                    <td id="processStatusText"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="process-details-section">
+                    <h6><i class="fas fa-info-circle me-2"></i>Application Details</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-hashtag me-2"></i>Customer ID:
+                                        </th>
+                                        <td id="processCustId"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-user me-2"></i>Customer Name:
+                                        </th>
+                                        <td id="processName"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-tag me-2"></i>Product Type:
+                                        </th>
+                                        <td id="processProduct"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-box me-2"></i>Product Name:
+                                        </th>
+                                        <td id="processProductName"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-info-circle me-2"></i>Current Status:
+                                        </th>
+                                        <td id="processStatusText"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-percentage me-2"></i>Interest Rate:
+                                        </th>
+                                        <td id="processIR"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-hourglass-half me-2"></i>Tenure:
+                                        </th>
+                                        <td id="processTenure"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-rupee-sign me-2"></i>Loan Amount:
+                                        </th>
+                                        <td id="processLoanAmount"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            <i class="fas fa-calendar-alt me-2"></i>Application Date:
+                                        </th>
+                                        <td id="processApplicationDate"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="processStatus" class="form-label">
-                                <i class="fas fa-edit me-2"></i>Update Status
-                            </label>
-                            <select id="processStatus" class="form-select">
-                                <option value="Approved">Approve</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Rejected">Reject</option>
-                            </select>
+                <div class="process-details-section">
+                    <h6><i class="fas fa-edit me-2"></i>Update Application Status</h6>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="processStatus" class="form-label">
+                                    <i class="fas fa-clipboard-check me-2"></i>Select New Status
+                                </label>
+                                <select id="processStatus" class="form-select">
+                                    <option value="Approved">Approved</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -375,6 +391,8 @@
         let rowsPerPage = 5;
         let allRows = [];
         let filteredRows = [];
+        let currentApplicationId = null;
+        let currentCustomerId = null;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -555,38 +573,35 @@
             }
         });
 
-        // Process button click handler
+        // Process button click handler - Using data attributes
         $(document).on('click', '.btn-process', function () {
-            const customerId = $(this).data('id');
-
-            $.ajax({
-                url: '/LoanApplication/GetApplicationDetails',
-                type: 'GET',
-                data: { customerId: customerId },
-                success: function (data) {
-                    if (data) {
-                        $('#processCustId').text(data.customerId);
-                        $('#processName').text(data.name);
-                        $('#processIR').text(data.interestRate + '%');
-                        $('#processTenure').text(data.loanTenure + ' months');
-                        $('#processProduct').text(data.productType);
-                        $('#processProductName').text(data.productName);
-                        $('#processLoanAmount').text('₹' + parseFloat(data.loanAmount).toLocaleString('en-IN'));
-                        $('#processApplicationDate').text(data.applicationDate);
-                        $('#processStatusText').text(data.approvalStatus);
-                        $('#processStatus').val(data.approvalStatus);
-                        $('#saveProcessStatusBtn').data('application-id', data.applicationId);
-                        $('#saveProcessStatusBtn').data('customer-id', data.customerId);
-                    }
-                }
-            });
+            const button = $(this);
+            
+            // Get data from button attributes
+            currentCustomerId = button.data('customer-id');
+            currentApplicationId = button.data('application-id');
+            
+            // Populate modal with data
+            $('#processCustId').text(currentCustomerId);
+            $('#processName').text(button.data('name'));
+            $('#processProduct').text(button.data('product-type'));
+            $('#processProductName').text(button.data('product-name'));
+            $('#processIR').text(button.data('interest-rate') + '%');
+            $('#processTenure').text(button.data('tenure') + ' months');
+            $('#processLoanAmount').text('₹' + parseFloat(button.data('amount')).toLocaleString('en-IN'));
+            $('#processApplicationDate').text(button.data('date'));
+            $('#processStatusText').text(button.data('status'));
+            $('#processStatus').val(button.data('status'));
         });
 
         // Save process status button click handler
         $('#saveProcessStatusBtn').on('click', function () {
-            const applicationId = $(this).data('application-id');
-            const customerId = $(this).data('customer-id');
             const newStatus = $('#processStatus').val();
+
+            if (!currentApplicationId || !currentCustomerId) {
+                alert('Error: Application data not found. Please try again.');
+                return;
+            }
 
             const submitBtn = $(this);
             const originalText = submitBtn.html();
@@ -597,10 +612,13 @@
                 url: '/LoanApplication/UpdateStatus',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ applicationId: applicationId, status: newStatus }),
+                data: JSON.stringify({ 
+                    applicationId: currentApplicationId, 
+                    status: newStatus 
+                }),
                 success: function (response) {
                     // Update the status in the table without page reload
-                    updateStatusInTable(customerId, newStatus);
+                    updateStatusInTable(currentCustomerId, newStatus);
                     
                     // Close modal
                     $('#processApplicationModal').modal('hide');
@@ -608,7 +626,8 @@
                     // Show success message
                     alert(response.message || 'Status updated successfully!');
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('Error updating status:', error);
                     alert('Error updating status. Please try again.');
                 },
                 complete: function() {
@@ -620,7 +639,7 @@
 
         // Function to update status in table without page reload
         function updateStatusInTable(customerId, newStatus) {
-            const row = document.querySelector(`[data-id="${customerId}"]`).closest('tr');
+            const row = document.querySelector(`[data-customer-id="${customerId}"]`).closest('tr');
             if (row) {
                 const statusCell = row.querySelector('.status-badge');
                 if (statusCell) {
@@ -649,6 +668,12 @@
                     statusCell.classList.add(statusClass);
                     statusCell.innerHTML = `<i class="${statusIcon} me-1"></i>${newStatus}`;
                     statusCell.setAttribute('data-status', newStatus);
+                    
+                    // Update the button data attribute as well
+                    const processBtn = row.querySelector('.btn-process');
+                    if (processBtn) {
+                        processBtn.setAttribute('data-status', newStatus);
+                    }
                 }
             }
         }
