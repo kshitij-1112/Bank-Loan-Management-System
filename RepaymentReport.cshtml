@@ -270,6 +270,9 @@ function updatePagination(totalPages, totalRows, startIndex, endIndex) {
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
 
+        for (let i = startPage; i <= endPage; i++)Page - maxVisiblePages + 1);
+        }
+
         for (let i = startPage; i <= endPage; i++) {
             const pageBtn = createPaginationButton(i, i, false, i === currentPage);
             paginationContainer.appendChild(pageBtn);
