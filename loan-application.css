@@ -1,4 +1,4 @@
-/* Loan Application Management Styling */
+/* Loan Application Management Styling - Based on Reference Design */
 :root {
   --primary: #2c3e50;
   --secondary: #3498db;
@@ -52,6 +52,12 @@ body {
 }
 
 /* Apply Button - Centered */
+.apply-button-container {
+  text-align: center;
+  margin: 30px auto;
+  max-width: 96%;
+}
+
 .btn-apply {
   background: linear-gradient(135deg, var(--accent), var(--secondary));
   color: white;
@@ -60,13 +66,10 @@ body {
   border-radius: 30px;
   font-weight: 600;
   letter-spacing: 0.5px;
-  margin: 20px auto;
-  display: block;
   transition: all 0.3s;
   box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
   font-size: 1.1rem;
-  text-align: center;
-  width: fit-content;
+  display: inline-block;
 }
 
 .btn-apply:hover {
@@ -186,7 +189,7 @@ body {
   box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
 }
 
-/* Table Container - Fixed width issues */
+/* Table Container - Optimized for visibility */
 .table-container {
   background-color: white;
   border-radius: 12px;
@@ -201,24 +204,24 @@ body {
   flex-direction: column;
 }
 
-/* Table wrapper - Added horizontal scroll for mobile */
+/* Table wrapper */
 .table-wrapper {
   flex: 1;
   min-height: 400px;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 20px;
   overflow-x: auto;
 }
 
-/* Table Styling - Optimized column widths */
+/* Table Styling - Improved visibility */
 .table {
   margin-bottom: 0;
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
   flex: 1;
-  min-width: 1200px; /* Ensure minimum width for all columns */
+  font-size: 0.9rem;
 }
 
 .table thead {
@@ -231,47 +234,15 @@ body {
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 8px;
+  padding: 15px 12px;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   letter-spacing: 0.5px;
   vertical-align: middle;
   position: relative;
   text-align: left;
   white-space: nowrap;
 }
-
-/* Specific column widths */
-.table thead th:nth-child(1) {
-  width: 8%;
-} /* Customer ID */
-.table thead th:nth-child(2) {
-  width: 12%;
-} /* Name */
-.table thead th:nth-child(3) {
-  width: 12%;
-} /* Product Type */
-.table thead th:nth-child(4) {
-  width: 15%;
-} /* Product Name */
-.table thead th:nth-child(5) {
-  width: 8%;
-} /* Interest Rate */
-.table thead th:nth-child(6) {
-  width: 8%;
-} /* Tenure */
-.table thead th:nth-child(7) {
-  width: 12%;
-} /* Loan Amount */
-.table thead th:nth-child(8) {
-  width: 10%;
-} /* Application Date */
-.table thead th:nth-child(9) {
-  width: 10%;
-} /* Status */
-.table thead th:nth-child(10) {
-  width: 15%;
-} /* Actions */
 
 .table thead th:first-child {
   border-left: none;
@@ -282,17 +253,18 @@ body {
 }
 
 .table thead th i {
-  margin-right: 4px;
+  margin-right: 6px;
   font-size: 0.9rem;
 }
 
 .table tbody td {
-  padding: 12px 8px;
+  padding: 15px 12px;
   border: 1px solid #e0e0e0;
   border-top: none;
   vertical-align: middle;
   word-break: break-word;
-  font-size: 0.85rem;
+  color: #2c3e50;
+  font-weight: 500;
 }
 
 .table tbody td:first-child {
@@ -304,7 +276,7 @@ body {
 }
 
 .table tbody tr:hover {
-  background-color: rgba(52, 152, 219, 0.05);
+  background-color: rgba(52, 152, 219, 0.08);
   transition: background-color 0.2s ease;
 }
 
@@ -313,45 +285,47 @@ body {
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
-  background-color: rgba(52, 152, 219, 0.05);
+  background-color: rgba(248, 249, 250, 0.8);
 }
 
-/* Status Badge - Compact */
+/* Status Badge - Reference Design */
 .status-badge {
-  padding: 4px 8px;
-  border-radius: 15px;
-  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 0.7rem;
+  gap: 6px;
+  font-size: 0.8rem;
   text-align: center;
-  min-width: 80px;
+  min-width: 100px;
   justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .status-approved {
-  background-color: rgba(39, 174, 96, 0.2);
-  color: var(--success);
-  border: 1px solid var(--success);
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
 }
 
 .status-pending {
-  background-color: rgba(243, 156, 18, 0.2);
-  color: var(--warning);
-  border: 1px solid var(--warning);
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
 }
 
 .status-rejected {
-  background-color: rgba(231, 76, 60, 0.2);
-  color: var(--danger);
-  border: 1px solid var(--danger);
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
-/* Product Icons - Smaller */
+/* Product Icons */
 .product-icon {
-  margin-right: 4px;
-  font-size: 0.9rem;
+  margin-right: 8px;
+  font-size: 1rem;
   color: var(--secondary);
 }
 
@@ -359,55 +333,38 @@ body {
 .amount {
   font-weight: 700;
   color: var(--success);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
-/* Action Buttons - Compact */
-.btn-action {
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 0.65rem;
+/* Process Button - Reference Design */
+.btn-process {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.3s;
-  border: none;
-  margin-right: 2px;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   text-decoration: none;
-}
-
-.btn-edit {
-  background-color: var(--warning);
-  color: white;
-}
-
-.btn-edit:hover {
-  background-color: #e67e22;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.btn-delete {
-  background-color: var(--danger);
-  color: white;
-}
-
-.btn-delete:hover {
-  background-color: #c0392b;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.btn-process {
-  background-color: var(--success);
-  color: white;
+  box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-process:hover {
-  background-color: #1e8449;
+  background: linear-gradient(135deg, #2980b9, #1f4e79);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-process i {
+  font-size: 1rem;
 }
 
 /* Pagination section */
@@ -487,16 +444,34 @@ body {
   border-color: var(--primary);
 }
 
-/* Modal Styling - Larger and more spacious */
+/* Modal Styling - Center Aligned */
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-dialog {
+  margin: 0;
+  max-width: 90vw;
+  width: 100%;
+}
+
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+}
+
 .modal-content {
   border-radius: 15px;
   border: none;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .modal-header {
-  background: linear-gradient(to right, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   border-bottom: none;
   padding: 25px 30px;
@@ -517,11 +492,15 @@ body {
 }
 
 /* Large Modal Specific Styling */
+.modal-lg {
+  max-width: 900px;
+}
+
 .modal-lg .modal-body {
   padding: 35px 40px;
 }
 
-/* Form Styling - More spacious */
+/* Form Styling - Enhanced */
 .form-group {
   margin-bottom: 25px;
   position: relative;
@@ -546,6 +525,8 @@ body {
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  color: var(--dark);
+  font-weight: 500;
 }
 
 .form-control:focus,
@@ -555,7 +536,7 @@ body {
   outline: none;
 }
 
-/* Form Buttons - Larger */
+/* Form Buttons - Enhanced */
 .btn-success {
   background: linear-gradient(135deg, var(--success), #1e8449);
   color: white;
@@ -565,10 +546,12 @@ body {
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-success:hover {
@@ -587,10 +570,12 @@ body {
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-secondary:hover {
@@ -608,10 +593,12 @@ body {
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-primary:hover {
@@ -634,7 +621,7 @@ body {
   opacity: 1;
 }
 
-/* Table borderless for modal - More spacing */
+/* Table borderless for modal - Enhanced */
 .table-borderless th,
 .table-borderless td {
   border: none;
@@ -649,6 +636,8 @@ body {
 
 .table-borderless td {
   font-size: 0.95rem;
+  color: var(--dark);
+  font-weight: 500;
 }
 
 /* Validation errors */
@@ -660,31 +649,50 @@ body {
   font-weight: 500;
 }
 
-/* Modal Footer - Better spacing */
+/* Modal Footer - Enhanced */
 .modal-footer {
   padding: 25px 30px;
   border-top: 1px solid #e0e0e0;
   background-color: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
 }
 
 .modal-lg .modal-footer {
   padding: 30px 40px;
 }
 
+/* Process Modal Specific Styling */
+.process-details-section {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.process-details-section h6 {
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--secondary);
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .table {
-    min-width: 1000px;
+    font-size: 0.85rem;
   }
 
   .table thead th {
-    padding: 10px 6px;
-    font-size: 0.7rem;
+    padding: 12px 8px;
+    font-size: 0.75rem;
   }
 
   .table tbody td {
-    padding: 10px 6px;
-    font-size: 0.8rem;
+    padding: 12px 8px;
   }
 }
 
@@ -709,8 +717,12 @@ body {
     max-width: 98%;
   }
 
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
   .table {
-    min-width: 900px;
+    min-width: 800px;
   }
 
   .dashboard-header {
@@ -723,10 +735,9 @@ body {
     font-size: 1.5rem;
   }
 
-  .btn-action {
-    font-size: 0.6rem;
-    padding: 3px 6px;
-    margin-right: 1px;
+  .btn-process {
+    font-size: 0.75rem;
+    padding: 8px 15px;
   }
 
   .refresh-container {
@@ -745,6 +756,10 @@ body {
   }
 
   /* Modal adjustments for mobile */
+  .modal-dialog {
+    max-width: 95vw;
+  }
+
   .modal-body {
     padding: 20px;
   }
@@ -775,18 +790,18 @@ body {
   }
 
   .table thead th {
-    padding: 8px 4px;
-    font-size: 0.65rem;
+    padding: 10px 6px;
+    font-size: 0.7rem;
   }
 
   .table tbody td {
-    padding: 8px 4px;
-    font-size: 0.75rem;
+    padding: 10px 6px;
+    font-size: 0.8rem;
   }
 
-  .btn-action {
-    font-size: 0.55rem;
-    padding: 2px 4px;
+  .btn-process {
+    font-size: 0.7rem;
+    padding: 6px 12px;
   }
 
   .pagination .page-item .page-link {
@@ -797,9 +812,9 @@ body {
   }
 
   .status-badge {
-    font-size: 0.6rem;
-    padding: 3px 6px;
-    min-width: 70px;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+    min-width: 80px;
   }
 }
 
@@ -812,12 +827,6 @@ body {
 /* Smooth transitions */
 * {
   box-sizing: border-box;
-}
-
-/* Prevent layout shifts during transitions */
-.table-container,
-.table-controls {
-  transition: none !important;
 }
 
 /* Utility classes */
@@ -855,4 +864,8 @@ body {
 
 .text-center {
   text-align: center;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
 }
