@@ -1,0 +1,107 @@
+@{ 
+    ViewData["Title"] = "Reports"; 
+} 
+
+<!-- Include Font Awesome for Icons --> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Include custom CSS -->
+<link rel="stylesheet" href="~/css/report.css">
+<!-- Include jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<div class="container text-center mt-4"> 
+    <h2 class="mb-4">Reports Dashboard</h2> 
+ 
+    <!-- Report Selection Buttons with Icons --> 
+    <div class="mb-4"> 
+        <button class="btn btn-primary me-2" id="btnLoanReport"> 
+            <i class="fas fa-file-invoice-dollar"></i> Loan Report 
+        </button> 
+        <button class="btn btn-success me-2" id="btnRepaymentReport"> 
+            <i class="fas fa-receipt"></i> Repayment Report 
+        </button> 
+        <button class="btn btn-warning" id="btnOutstandingReport"> 
+            <i class="fas fa-money-bill-wave"></i> Outstanding Report 
+        </button> 
+    </div> 
+ 
+    <!-- Dynamic Report Container --> 
+    <div id="reportContainer"></div>
+</div> 
+ 
+@section Scripts{ 
+    <script> 
+    $(document).ready(function () {
+        // Load Loan Report by default
+        $("#reportContainer").load("/Report/LoanReport");
+        
+        // Set active state for the Loan Report button
+        $("#btnLoanReport").addClass("active");
+        
+        $("#btnLoanReport").click(function () { 
+            $("#reportContainer").load("/Report/LoanReport");
+            $(".btn").removeClass("active");
+            $(this).addClass("active");
+        }); 
+ 
+        $("#btnRepaymentReport").click(function () { 
+            $("#reportContainer").load("/Report/RepaymentReport");
+            $(".btn").removeClass("active");
+            $(this).addClass("active");
+        }); 
+ 
+        $("#btnOutstandingReport").click(function () { 
+            $("#reportContainer").load("/Report/OutstandingReport");
+            $(".btn").removeClass("active");
+            $(this).addClass("active");
+        });
+        
+        // Handle PDF export globally for any report table
+        $(document).on("click", "#btnExport", function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Determine which table is currently visible
+            let tableId;
+            if ($("#loanReportTable").length) {
+                tableId = "loanReportTable";
+                reportTitle = "Loan Report";
+            } else if ($("#repaymentReportTable").length) {
+                tableId = "repaymentReportTable";
+                reportTitle = "Repayment Report";
+            } else if ($("#outstandingReportTable").length) {
+                tableId = "outstandingReportTable";
+                reportTitle = "Outstanding Loans Report";
+            }
+            
+            if (tableId) {
+                // Add title to PDF
+                doc.setFontSize(18);
+                doc.text(reportTitle, 14, 22);
+                
+                // Add date
+                doc.setFontSize(11);
+                doc.setTextColor(100);
+                doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+                
+                // Export table to PDF
+                doc.autoTable({ 
+                    html: `#${tableId}`,
+                    startY: 35,
+                    styles: { fontSize: 10 },
+                    headStyles: { 
+                        fillColor: [52, 152, 219],
+                        textColor: 255
+                    },
+                    alternateRowStyles: { fillColor: [245, 245, 245] }
+                });
+                
+                // Save the PDF
+                let timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+                doc.save(`${reportTitle}_${timestamp}.pdf`);
+            }
+        });
+    }); 
+    </script> 
+} 
