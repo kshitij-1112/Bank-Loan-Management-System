@@ -98,13 +98,15 @@ body {
 }
 
 /* Outstanding Balance Section */
+/* Outstanding Balance Section - Compact */
 .balance-section {
   background-color: white;
   border-radius: 12px;
   padding: 25px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   margin: 20px auto;
-  max-width: 96%;
+  max-width: 600px; /* Changed from 96% to 600px for compact size */
+  width: 90%; /* Added width constraint */
 }
 
 .balance-section h3 {
@@ -121,11 +123,13 @@ body {
   gap: 15px;
   align-items: end;
   flex-wrap: wrap;
+  justify-content: center; /* Center the form elements */
 }
 
 .balance-form .form-group {
-  flex: 1;
+  flex: 0 0 auto; /* Changed from flex: 1 to fixed width */
   min-width: 200px;
+  max-width: 250px; /* Added max-width constraint */
 }
 
 .balance-form label {
@@ -864,10 +868,16 @@ body {
   .balance-form {
     flex-direction: column;
     gap: 15px;
+    align-items: center; /* Center align for mobile */
   }
 
   .balance-form .form-group {
     min-width: 100%;
+    max-width: 100%;
+  }
+
+  .btn-balance {
+    width: 100%; /* Full width on mobile */
   }
 
   .refresh-container {
