@@ -18,12 +18,14 @@
     <p>Apply for a new loan or manage your existing applications</p>
 </div>
 
-<!-- Apply Button -->
+<!-- Apply Button - Centered -->
 @if (role == "Customer")
 {
-    <button type="button" class="btn btn-apply mt-auto" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
-        <i class="fas fa-plus-circle me-2"></i>Apply for Loan
-    </button>
+    <div class="text-center">
+        <button type="button" class="btn btn-apply" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
+            <i class="fas fa-plus-circle me-2"></i>Apply for Loan
+        </button>
+    </div>
 }
 
 <!-- Refresh Button -->
@@ -67,19 +69,19 @@
                 <tr>
                     @if (role == "Admin")
                     {
-                        <th scope="col"><i class="fas fa-hashtag me-2"></i>Customer ID</th>
-                        <th scope="col"><i class="fas fa-user me-2"></i>Name</th>
+                        <th scope="col"><i class="fas fa-hashtag me-1"></i>Customer ID</th>
+                        <th scope="col"><i class="fas fa-user me-1"></i>Name</th>
                     }
-                    <th scope="col"><i class="fas fa-tag me-2"></i>Product Type</th>
-                    <th scope="col"><i class="fas fa-box me-2"></i>Product Name</th>
-                    <th scope="col"><i class="fas fa-percentage me-2"></i>Interest Rate</th>
-                    <th scope="col"><i class="fas fa-hourglass-half me-2"></i>Tenure</th>
-                    <th scope="col"><i class="fas fa-rupee-sign me-2"></i>Loan Amount</th>
-                    <th scope="col"><i class="fas fa-calendar-alt me-2"></i>Application Date</th>
-                    <th scope="col"><i class="fas fa-info-circle me-2"></i>Status</th>
+                    <th scope="col"><i class="fas fa-tag me-1"></i>Product Type</th>
+                    <th scope="col"><i class="fas fa-box me-1"></i>Product Name</th>
+                    <th scope="col"><i class="fas fa-percentage me-1"></i>Rate</th>
+                    <th scope="col"><i class="fas fa-hourglass-half me-1"></i>Tenure</th>
+                    <th scope="col"><i class="fas fa-rupee-sign me-1"></i>Amount</th>
+                    <th scope="col"><i class="fas fa-calendar-alt me-1"></i>Date</th>
+                    <th scope="col"><i class="fas fa-info-circle me-1"></i>Status</th>
                     @if (role == "Admin")
                     {
-                        <th scope="col"><i class="fas fa-cogs me-2"></i>Actions</th>
+                        <th scope="col"><i class="fas fa-cogs me-1"></i>Actions</th>
                     }
                 </tr>
             </thead>
@@ -154,7 +156,7 @@
                             @if(role == "Admin")
                             {
                                 <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex gap-1">
                                         <button type="button" class="btn btn-action btn-process" data-id="@app.CustomerId" data-bs-toggle="modal" data-bs-target="#processApplicationModal">
                                             <i class="fas fa-cogs me-1"></i>Process
                                         </button>
@@ -185,63 +187,73 @@
     </div>
 </div>
 
-<!-- Loan Application Modal -->
+<!-- Loan Application Modal - Large Size -->
 <div class="modal fade" id="loanApplicationModal" tabindex="-1" aria-labelledby="loanApplicationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <form id="loanApplicationForm" method="post" asp-action="ApplyForLoan" asp-controller="LoanApplication">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="loanModalLabel">
-                        <i class="fas fa-file-signature me-2"></i>Loan Application
+                        <i class="fas fa-file-signature me-2"></i>Loan Application Form
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="productTypeDropdown">
-                            <i class="fas fa-tag me-2"></i>Product Type:
-                        </label>
-                        <select class="form-control" id="productTypeDropdown" name="ProductType">
-                            <option value="">-- Select Product Type --</option>
-                            @foreach (var type in ViewBag.ProductTypes as List<string>)
-                            {
-                                <option value="@type">@type</option>
-                            }
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="productTypeDropdown">
+                                    <i class="fas fa-tag me-2"></i>Product Type
+                                </label>
+                                <select class="form-control" id="productTypeDropdown" name="ProductType">
+                                    <option value="">-- Select Product Type --</option>
+                                    @foreach (var type in ViewBag.ProductTypes as List<string>)
+                                    {
+                                        <option value="@type">@type</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="LoanProductId">
+                                    <i class="fas fa-box me-2"></i>Product Name
+                                </label>
+                                <select asp-for="LoanProductId" class="form-control" id="productNameDropdown">
+                                    <option value="">-- Select Product Name --</option>
+                                </select>
+                                <span asp-validation-for="LoanProductId" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="LoanProductId">
-                            <i class="fas fa-box me-2"></i>Product Name:
-                        </label>
-                        <select asp-for="LoanProductId" class="form-control" id="productNameDropdown">
-                            <option value="">-- Select Product Name --</option>
-                        </select>
-                        <span asp-validation-for="LoanProductId" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="LoanAmount">
-                            <i class="fas fa-rupee-sign me-2"></i>Loan Amount:
-                        </label>
-                        <input asp-for="LoanAmount" type="number" class="form-control" placeholder="Enter loan amount" />
-                        <span asp-validation-for="LoanAmount" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="LoanTenure">
-                            <i class="fas fa-hourglass-half me-2"></i>Tenure:
-                        </label>
-                        <input asp-for="LoanTenure" type="number" class="form-control" placeholder="Enter loan tenure" />
-                        <span asp-validation-for="LoanTenure" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="LoanAmount">
+                                    <i class="fas fa-rupee-sign me-2"></i>Loan Amount
+                                </label>
+                                <input asp-for="LoanAmount" type="number" class="form-control" placeholder="Enter loan amount" />
+                                <span asp-validation-for="LoanAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="LoanTenure">
+                                    <i class="fas fa-hourglass-half me-2"></i>Tenure (in months)
+                                </label>
+                                <input asp-for="LoanTenure" type="number" class="form-control" placeholder="Enter loan tenure" />
+                                <span asp-validation-for="LoanTenure" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" name="submitType" value="Submit">
-                        <i class="fas fa-check-circle me-1"></i>Submit Application
+                        <i class="fas fa-check-circle me-2"></i>Submit Application
                     </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Close
+                        <i class="fas fa-times me-2"></i>Cancel
                     </button>
                 </div>
             </div>
@@ -249,9 +261,9 @@
     </div>
 </div>
 
-<!-- Process Application Modal -->
+<!-- Process Application Modal - Large Size -->
 <div class="modal fade" id="processApplicationModal" tabindex="-1" aria-labelledby="processApplicationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="processApplicationModalLabel">
@@ -260,82 +272,96 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-borderless mb-3">
-                    <tbody>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-hashtag me-2"></i>Customer ID:
-                            </th>
-                            <td id="processCustId"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-user me-2"></i>Name:
-                            </th>
-                            <td id="processName"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-percentage me-2"></i>Interest Rate:
-                            </th>
-                            <td id="processIR"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-hourglass-half me-2"></i>Tenure:
-                            </th>
-                            <td id="processTenure"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-tag me-2"></i>Product Type:
-                            </th>
-                            <td id="processProduct"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-box me-2"></i>Product Name:
-                            </th>
-                            <td id="processProductName"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-rupee-sign me-2"></i>Loan Amount:
-                            </th>
-                            <td id="processLoanAmount"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-calendar-alt me-2"></i>Application Date:
-                            </th>
-                            <td id="processApplicationDate"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="w-50">
-                                <i class="fas fa-info-circle me-2"></i>Current Status:
-                            </th>
-                            <td id="processStatusText"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless mb-3">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-hashtag me-2"></i>Customer ID:
+                                    </th>
+                                    <td id="processCustId"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-user me-2"></i>Name:
+                                    </th>
+                                    <td id="processName"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-percentage me-2"></i>Interest Rate:
+                                    </th>
+                                    <td id="processIR"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-hourglass-half me-2"></i>Tenure:
+                                    </th>
+                                    <td id="processTenure"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-tag me-2"></i>Product Type:
+                                    </th>
+                                    <td id="processProduct"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless mb-3">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-box me-2"></i>Product Name:
+                                    </th>
+                                    <td id="processProductName"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-rupee-sign me-2"></i>Loan Amount:
+                                    </th>
+                                    <td id="processLoanAmount"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-calendar-alt me-2"></i>Application Date:
+                                    </th>
+                                    <td id="processApplicationDate"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="w-50">
+                                        <i class="fas fa-info-circle me-2"></i>Current Status:
+                                    </th>
+                                    <td id="processStatusText"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                <div class="form-group">
-                    <label for="processStatus" class="form-label">
-                        <i class="fas fa-edit me-2"></i>Update Status:
-                    </label>
-                    <select id="processStatus" class="form-select">
-                        <option value="Approved">Approve</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Rejected">Reject</option>
-                    </select>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="processStatus" class="form-label">
+                                <i class="fas fa-edit me-2"></i>Update Status
+                            </label>
+                            <select id="processStatus" class="form-select">
+                                <option value="Approved">Approve</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Rejected">Reject</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Close
+                    <i class="fas fa-times me-2"></i>Close
                 </button>
                 <button type="button" class="btn btn-primary" id="saveProcessStatusBtn">
-                    <i class="fas fa-save me-1"></i>Save Changes
+                    <i class="fas fa-save me-2"></i>Save Changes
                 </button>
             </div>
         </div>
@@ -564,7 +590,7 @@
 
             const submitBtn = $(this);
             const originalText = submitBtn.html();
-            submitBtn.html('<i class="fas fa-spinner fa-spin me-1"></i>Saving...');
+            submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
             submitBtn.prop('disabled', true);
 
             $.ajax({
