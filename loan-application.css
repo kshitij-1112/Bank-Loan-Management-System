@@ -222,6 +222,7 @@ body {
   width: 100%;
   flex: 1;
   font-size: 0.9rem;
+  table-layout: auto;
 }
 
 .table thead {
@@ -234,7 +235,7 @@ body {
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 15px 12px;
+  padding: 12px 10px;
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.5px;
@@ -242,6 +243,38 @@ body {
   position: relative;
   text-align: left;
   white-space: nowrap;
+}
+
+/* Specific column widths for better visibility */
+.table thead th:nth-child(1) {
+  width: 8%;
+}
+.table thead th:nth-child(2) {
+  width: 12%;
+}
+.table thead th:nth-child(3) {
+  width: 10%;
+}
+.table thead th:nth-child(4) {
+  width: 15%;
+}
+.table thead th:nth-child(5) {
+  width: 8%;
+}
+.table thead th:nth-child(6) {
+  width: 8%;
+}
+.table thead th:nth-child(7) {
+  width: 12%;
+}
+.table thead th:nth-child(8) {
+  width: 10%;
+}
+.table thead th:nth-child(9) {
+  width: 10%;
+}
+.table thead th:nth-child(10) {
+  width: 7%;
 }
 
 .table thead th:first-child {
@@ -258,13 +291,15 @@ body {
 }
 
 .table tbody td {
-  padding: 15px 12px;
+  padding: 12px 10px;
   border: 1px solid #e0e0e0;
   border-top: none;
   vertical-align: middle;
-  word-break: break-word;
   color: #2c3e50;
   font-weight: 500;
+  font-size: 0.85rem;
+  white-space: normal;
+  word-break: normal;
 }
 
 .table tbody td:first-child {
@@ -288,83 +323,79 @@ body {
   background-color: rgba(248, 249, 250, 0.8);
 }
 
-/* Status Badge - Reference Design */
+/* Status Badge - Compact and Optimized */
 .status-badge {
-  padding: 8px 16px;
-  border-radius: 25px;
+  padding: 5px 10px;
+  border-radius: 20px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
+  gap: 4px;
+  font-size: 0.75rem;
   text-align: center;
-  min-width: 100px;
+  min-width: 80px;
   justify-content: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .status-approved {
   background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
-  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+  box-shadow: 0 2px 5px rgba(39, 174, 96, 0.3);
 }
 
 .status-pending {
   background: linear-gradient(135deg, #f39c12, #e67e22);
   color: white;
-  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+  box-shadow: 0 2px 5px rgba(243, 156, 18, 0.3);
 }
 
 .status-rejected {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
-}
-
-/* Product Icons */
-.product-icon {
-  margin-right: 8px;
-  font-size: 1rem;
-  color: var(--secondary);
+  box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
 }
 
 /* Amount Styling */
 .amount {
   font-weight: 700;
   color: var(--success);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
-/* Process Button - Reference Design */
+/* Process Button - Compact and Optimized */
 .btn-process {
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 0.85rem;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .btn-process:hover {
   background: linear-gradient(135deg, #2980b9, #1f4e79);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 3px 8px rgba(52, 152, 219, 0.4);
 }
 
 .btn-process i {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Pagination section */
@@ -687,12 +718,22 @@ body {
   }
 
   .table thead th {
-    padding: 12px 8px;
+    padding: 10px 8px;
     font-size: 0.75rem;
   }
 
   .table tbody td {
-    padding: 12px 8px;
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 992px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 900px;
   }
 }
 
@@ -717,14 +758,6 @@ body {
     max-width: 98%;
   }
 
-  .table-wrapper {
-    overflow-x: auto;
-  }
-
-  .table {
-    min-width: 800px;
-  }
-
   .dashboard-header {
     margin: 15px auto;
     padding: 20px;
@@ -733,11 +766,6 @@ body {
 
   .dashboard-header h1 {
     font-size: 1.5rem;
-  }
-
-  .btn-process {
-    font-size: 0.75rem;
-    padding: 8px 15px;
   }
 
   .refresh-container {
@@ -790,18 +818,13 @@ body {
   }
 
   .table thead th {
-    padding: 10px 6px;
+    padding: 8px 6px;
     font-size: 0.7rem;
   }
 
   .table tbody td {
-    padding: 10px 6px;
-    font-size: 0.8rem;
-  }
-
-  .btn-process {
-    font-size: 0.7rem;
-    padding: 6px 12px;
+    padding: 8px 6px;
+    font-size: 0.75rem;
   }
 
   .pagination .page-item .page-link {
@@ -812,9 +835,9 @@ body {
   }
 
   .status-badge {
-    font-size: 0.7rem;
-    padding: 6px 12px;
-    min-width: 80px;
+    font-size: 0.65rem;
+    padding: 4px 8px;
+    min-width: 70px;
   }
 }
 
