@@ -13,60 +13,19 @@
   --pagination-border: #495057;
   --pagination-bg: #f8f9fa;
   --pagination-active-bg: #3498db;
-  --navbar-height: 70px;
 }
 
 body {
   background-color: #f5f7fa;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding-top: var(--navbar-height);
-}
-
-/* Fixed Navbar */
-.fixed-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1030;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  height: var(--navbar-height);
-  padding: 0;
-}
-
-.fixed-navbar .container-fluid {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-}
-
-.fixed-navbar .navbar-brand {
-  color: white !important;
-  font-weight: 700;
-  font-size: 1.3rem;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-}
-
-.fixed-navbar .navbar-brand:hover {
-  color: #ecf0f1 !important;
-}
-
-.fixed-navbar .navbar-text {
-  color: white !important;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
+  padding: 20px 0;
 }
 
 /* Main Content */
 .main-content {
   padding: 20px 0;
-  min-height: calc(100vh - var(--navbar-height));
+  min-height: 100vh;
 }
 
 /* Header Container */
@@ -185,42 +144,43 @@ body {
   margin-right: 10px;
 }
 
+/* Improved lighter colors for report buttons */
 .btn-loan-report {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
   color: white;
 }
 
 .btn-loan-report:hover,
 .btn-loan-report.active {
-  background: linear-gradient(135deg, #2980b9, #1f4e79);
+  background: linear-gradient(135deg, #0984e3, #0770c4);
   transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 8px 15px rgba(116, 185, 255, 0.4);
   color: white;
 }
 
 .btn-repayment-report {
-  background: linear-gradient(135deg, #27ae60, #229954);
+  background: linear-gradient(135deg, #55efc4, #00b894);
   color: white;
 }
 
 .btn-repayment-report:hover,
 .btn-repayment-report.active {
-  background: linear-gradient(135deg, #229954, #1e8449);
+  background: linear-gradient(135deg, #00b894, #00a085);
   transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(39, 174, 96, 0.4);
+  box-shadow: 0 8px 15px rgba(85, 239, 196, 0.4);
   color: white;
 }
 
 .btn-outstanding-report {
-  background: linear-gradient(135deg, #f39c12, #e67e22);
+  background: linear-gradient(135deg, #fdcb6e, #e17055);
   color: white;
 }
 
 .btn-outstanding-report:hover,
 .btn-outstanding-report.active {
-  background: linear-gradient(135deg, #e67e22, #d35400);
+  background: linear-gradient(135deg, #e17055, #d63031);
   transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(243, 156, 18, 0.4);
+  box-shadow: 0 8px 15px rgba(253, 203, 110, 0.4);
   color: white;
 }
 
@@ -282,25 +242,26 @@ body {
   align-items: center;
 }
 
+/* Improved lighter colors for export and filter buttons */
 .btn-export {
-  background: linear-gradient(135deg, #6c757d, #495057);
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
   font-weight: 600;
   transition: all 0.3s;
-  box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);
+  box-shadow: 0 4px 6px rgba(162, 155, 254, 0.3);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .btn-export:hover {
-  background: linear-gradient(135deg, #495057, #343a40);
+  background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
   transform: translateY(-2px);
   color: white;
-  box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+  box-shadow: 0 6px 12px rgba(162, 155, 254, 0.4);
 }
 
 /* Bootstrap Search Input Group */
@@ -330,24 +291,24 @@ body {
 }
 
 .btn-filter {
-  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  background: linear-gradient(135deg, #81ecec, #00cec9);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
   font-weight: 600;
   transition: all 0.3s;
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 4px 6px rgba(129, 236, 236, 0.3);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .btn-filter:hover {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, #00cec9, #00b894);
   transform: translateY(-2px);
   color: white;
-  box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 6px 12px rgba(129, 236, 236, 0.4);
 }
 
 /* Table Container */
