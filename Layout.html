@@ -1,3 +1,47 @@
+<!-- Additional Filters -->
+<div class="filter-controls d-flex gap-3 mt-2">
+    <div>
+        <label for="statusFilter" class="form-label mb-1"><i class="fas fa-filter"></i> Status</label>
+        <select id="statusFilter" class="form-select" onchange="applyFilters()">
+            <option value="">All</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="productFilter" class="form-label mb-1"><i class="fas fa-filter"></i> Product Type</label>
+        <select id="productFilter" class="form-select" onchange="applyFilters()">
+            <option value="">All</option>
+            <option value="home">Home</option>
+            <option value="personal">Personal</option>
+            <option value="vehicle">Vehicle</option>
+        </select>
+    </div>
+</div>
+
+function applyFilters() {
+    let rows = [...allRows];
+
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const selectedStatus = document.getElementById('statusFilter').value.toLowerCase();
+    const selectedProduct = document.getElementById('productFilter').value.toLowerCase();
+
+    rows = rows.filter(row => {
+        const rowText = row.textContent.toLowerCase();
+        const rowStatus = row.querySelector('.status-badge')?.textContent.toLowerCase();
+        const rowProduct = row.cells[role === 'Admin' ? 3 : 1]?.textContent.toLowerCase(); // Adjusting column index
+
+        const matchesSearch = rowText.includes(searchTerm);
+        const matchesStatus = !selectedStatus || (rowStatus && rowStatus.includes(selectedStatus));
+        const matchesProduct = !selectedProduct || (rowProduct && rowProduct.includes(selectedProduct));
+
+        return matchesSearch && matchesStatus && matchesProduct;
+    });
+
+    filteredRows = rows;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
