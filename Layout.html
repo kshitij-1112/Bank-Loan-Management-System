@@ -1,4 +1,34 @@
- <!-- Filter Controls -->
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('productFilter').addEventListener('change', applyFilters);
+    applyFilters(); // Initial load
+});
+
+function applyFilters() {
+    const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+    const productFilter = document.getElementById('productFilter').value.toLowerCase();
+
+    const rows = document.querySelectorAll('.application-row');
+
+    rows.forEach(row => {
+        let statusMatch = false;
+        let productMatch = false;
+
+        // 1. Check status from .status-badge
+        const statusBadge = row.querySelector('.status-badge');
+        const statusText = statusBadge ? statusBadge.textContent.toLowerCase() : '';
+        statusMatch = !statusFilter || statusText.includes(statusFilter);
+
+        // 2. Check product type by looping through cells
+        const cells = Array.from(row.querySelectorAll('td'));
+        productMatch = !productFilter || cells.some(td => td.textContent.toLowerCase().includes(productFilter));
+
+        // Show or hide row based on both filters
+        row.style.display = (statusMatch && productMatch) ? '' : 'none';
+    });
+}
+<!-- 
+Filter Controls -->
 <div class="d-flex gap-3 my-3">
     <div>
         <label for="statusFilter" class="form-label"><i class="fas fa-filter me-1"></i>Status</label>
