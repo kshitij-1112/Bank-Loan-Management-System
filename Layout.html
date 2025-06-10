@@ -1,7 +1,7 @@
-<!-- Additional Filters -->
-<div class="filter-controls d-flex gap-3 mt-2">
+ <!-- Filter Controls -->
+<div class="d-flex gap-3 my-3">
     <div>
-        <label for="statusFilter" class="form-label mb-1"><i class="fas fa-filter"></i> Status</label>
+        <label for="statusFilter" class="form-label"><i class="fas fa-filter me-1"></i>Status</label>
         <select id="statusFilter" class="form-select" onchange="applyFilters()">
             <option value="">All</option>
             <option value="approved">Approved</option>
@@ -11,7 +11,7 @@
     </div>
 
     <div>
-        <label for="productFilter" class="form-label mb-1"><i class="fas fa-filter"></i> Product Type</label>
+        <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
         <select id="productFilter" class="form-select" onchange="applyFilters()">
             <option value="">All</option>
             <option value="home">Home</option>
@@ -22,25 +22,28 @@
 </div>
 
 function applyFilters() {
-    let rows = [...allRows];
+    let rows = Array.from(document.querySelectorAll('.application-row'));
 
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const selectedStatus = document.getElementById('statusFilter').value.toLowerCase();
     const selectedProduct = document.getElementById('productFilter').value.toLowerCase();
 
-    rows = rows.filter(row => {
-        const rowText = row.textContent.toLowerCase();
-        const rowStatus = row.querySelector('.status-badge')?.textContent.toLowerCase();
-        const rowProduct = row.cells[role === 'Admin' ? 3 : 1]?.textContent.toLowerCase(); // Adjusting column index
+    const filtered = rows.filter(row => {
+        const status = row.querySelector('.status-badge')?.textContent.toLowerCase() || '';
+        const product = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || ''; // 4th column = Product Type
 
-        const matchesSearch = rowText.includes(searchTerm);
-        const matchesStatus = !selectedStatus || (rowStatus && rowStatus.includes(selectedStatus));
-        const matchesProduct = !selectedProduct || (rowProduct && rowProduct.includes(selectedProduct));
+        const matchesStatus = !selectedStatus || status.includes(selectedStatus);
+        const matchesProduct = !selectedProduct || product.includes(selectedProduct);
 
-        return matchesSearch && matchesStatus && matchesProduct;
+        return matchesStatus && matchesProduct;
     });
 
-    filteredRows = rows;
+    // Hide all rows
+    rows.forEach(row => row.style.display = 'none');
+
+    // Show only filtered rows
+    filtered.forEach(row => row.style.display = '');
+
+    // Optionally, update pagination info here if needed
 }
 <!DOCTYPE html>
 <html lang="en">
