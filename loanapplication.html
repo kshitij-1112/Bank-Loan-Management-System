@@ -1,614 +1,329 @@
-@model BankLoanProject.Models.LoanApplicationViewModel
+Error
+Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'currentPage' has already been declared
+    at b (jquery.min.js:2:866)
+    at He (jquery.min.js:2:48373)
+    at S.fn.init.append (jquery.min.js:2:49724)
+    at S.fn.init.<anonymous> (jquery.min.js:2:50816)
+    at $ (jquery.min.js:2:32425)
+    at S.fn.init.html (jquery.min.js:2:50494)
+    at Object.<anonymous> (jquery.min.js:2:85141)
+    at c (jquery.min.js:2:28327)
+    at Object.fireWith [as resolveWith] (jquery.min.js:2:29072)
+    at l (jquery.min.js:2:79901)
+2VM53:100  Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
+    at updatePagination (<anonymous>:100:39)
+    at updateTable (<anonymous>:92:9)
+    at applyFilters (<anonymous>:61:11)
+    at HTMLSelectElement.onchange (Report:1:1)
+@model List<BankLoanProject.Models.OutstandingReportViewModel>
 @{
     var role = Context.Session.GetString("Role");
+    Layout = null;
 }
 
-<link rel="stylesheet" href="~/css/loan-application.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Dashboard Header -->
-<div class="dashboard-header">
-    <h1>
-        <i class="fas fa-file-invoice-dollar me-3"></i>
-        Loan Application Portal
-    </h1>
-
-</div>
-
-<!-- Apply Button - Centered -->
-@if (role == "Customer")
-{
-    <div class="apply-button-container">
-        <button type="button" class="btn-apply" id="applyForLoanButton" data-bs-toggle="modal" data-bs-target="#loanApplicationModal">
-            <i class="fas fa-plus-circle me-2"></i>Apply for Loan
-        </button>
-    </div>
-}
-
-
-
-<!-- Table Controls -->
-<div class="table-controls">
-    <div class="rows-control">
-        <label for="rowsPerPage">
-            <i class="fas fa-list-ol"></i>
-            Rows per page:
-        </label>
-        <select id="rowsPerPage" class="form-select" onchange="changeRowsPerPage()">
-            <option value="5" selected>5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-        </select>
-    </div>
-
-    <div class="d-flex gap-3 my-3">
-        <div>
-            <label for="statusFilter" class="form-label"><i class="fas fa-filter me-1"></i>Status</label>
-            <select id="statusFilter" class="form-select filter-dropdown"  onchange="applyFilters()">
-                <option value="">All</option>
-                <option value="Approved">Approved</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-            </select>
+<!-- Outstanding Report Section -->
+<div id="outstanding" class="report-section table-container">
+    <div class="section-header">
+        <div class="section-info">
+            @* <span class="badge bg-warning mb-2">Outstanding Reports</span> *@
+            <h4 class="mb-2">
+                <i class="fas fa-money-bill-wave me-2"></i>
+                Outstanding Loans Report
+            </h4>
+            @* <p class="text-muted">Track outstanding loan balances and payment status.</p> *@
         </div>
-        <div>
-            <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
-            <select id="productFilter" class="form-select filter-dropdown" onchange="applyFilters()">
-                <option value="">All</option>
-                <option value="Home">Home</option>
-                <option value="Personal">Personal</option>
-                <option value="Vehicle">Vehicle</option>
-            </select>
+        <div class="export-filter-controls">
+            <button class="btn btn-export" id="btnExport">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </button>
+            <!-- Filter Dropdown -->
+            <div>
+                <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
+                <select id="productFilter" class="form-select filter-dropdown" onchange="applyFilters()">
+                    <option value="">All</option>
+                    <option value="Home">Home</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Vehicle">Vehicle</option>
+                </select>
+            </div>
         </div>
     </div>
 
-
-
-
-    <div class="controls-right">
-        <!-- Bootstrap Search -->
-        <div class="input-group search-input-group">
-            <span class="input-group-text">
-                <i class="fas fa-search"></i>
-            </span>
-            <input type="text" class="form-control" id="searchInput" placeholder="Search applications..." oninput="searchApplications()">
-        </div>
-    </div>
-</div>
-
-<!-- Table Container -->
-<div class="table-container">
     <div class="table-wrapper">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="outstandingReportTable">
             <thead>
-                <tr class="application-row">
-                    <th scope="col" class="col-app-id">App ID</th>
+                <tr>
+                    <th scope="col" class="col-loan-id">Loan ID</th>
                     @if (role == "Admin")
                     {
-                        <th scope="col" class="col-customer-id">Cust ID</th>
-                        <th scope="col" class="col-name">Name</th>
+                        <th scope="col" class="col-customer-id">Customer ID</th>
+                        <th scope="col" class="col-customer-name">Customer Name</th>
                     }
                     <th scope="col" class="col-product-type">Product Type</th>
                     <th scope="col" class="col-product-name">Product Name</th>
-                    <th scope="col" class="col-interest">Rate</th>
-                    <th scope="col" class="col-tenure">Tenure</th>
-                    <th scope="col" class="col-amount">Amount</th>
-                    <th scope="col" class="col-date">Date</th>
-                    <th scope="col" class="col-status">Status</th>
-                    @if (role == "Admin")
-                    {
-                        <th scope="col" class="col-actions">Actions</th>
-                    }
+                    <th scope="col" class="col-loan-amount">Loan Amount</th>
+                    <th scope="col" class="col-outstanding-balance">Outstanding Balance</th>
+                    <th scope="col" class="col-paid-amount">Paid Amount</th>
+
                 </tr>
             </thead>
-            <tbody id="applicationTableBody">
-                @if (ViewBag.ApplicationList != null)
+            <tbody class="report-table-body">
+                @foreach (var report in Model)
                 {
-                    @foreach (var app in ViewBag.ApplicationList)
-                    {
-                        <tr class="application-row">
-                            <td class="text-center">
-                                <span class="application-id">@app.ApplicationId</span>
-                            </td>
-                            @if (role == "Admin")
-                            {
-                                <td class="text-center"><strong>@app.CustomerId</strong></td>
-                                <td><strong>@app.Name</strong></td>
-                            }
-                            <td><strong>@app.ProductType</strong></td>
-                            <td><strong>@app.ProductName</strong></td>
-                            <td class="text-center">@app.InterestRate?.ToString()%</td>
-                            <td class="text-center">@app.LoanTenure months</td>
-                            <td class="text-end">₹@app.LoanAmount?.ToString("N0")</td>
-                            <td class="text-center">@app.ApplicationDate?.ToString("dd-MM-yyyy")</td>
-                            <td class="text-center">
-                                @{
-                                    string statusClass = "";
-                                    string statusIcon = "";
-                                    switch (app.ApprovalStatus?.ToLower())
-                                    {
-                                        case "approved":
-                                            statusClass = "status-verified";
-                                            statusIcon = "fas fa-check-circle";
-                                            break;
-                                        case "pending":
-                                            statusClass = "status-pending";
-                                            statusIcon = "fas fa-clock";
-                                            break;
-                                        case "rejected":
-                                            statusClass = "status-rejected";
-                                            statusIcon = "fas fa-times-circle";
-                                            break;
-                                        default:
-                                            statusClass = "status-pending";
-                                            statusIcon = "fas fa-clock";
-                                            break;
-                                    }
-                                }
-                                <span class="status-badge @statusClass">
-                                    <i class="@statusIcon"></i>@app.ApprovalStatus
-                                </span>
-                            </td>
-                            @if (role == "Admin")
-                            {
-                                <td class="text-center">
-                                    <button type="button"
-                                            class="btn-action btn-process @(app.ApprovalStatus == "APPROVED" || app.ApprovalStatus == "REJECTED" ? "disabled" : "")"
-                                            data-id="@app.ApplicationId"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#processApplicationModal"
-                                    @(app.ApprovalStatus == "APPROVED" || app.ApprovalStatus == "REJECTED" ? "disabled" : "")>
-                                        <span>@(app.ApprovalStatus == "APPROVED" || app.ApprovalStatus == "REJECTED" ? "Processed" : "Process")</span>
-                                    </button>
-                                </td>
+                    <tr class="report-row">
+                        <td class="text-center"><strong>@report.LoanId</strong></td>
+                        @if (role == "Admin")
+                        {
+                            <td class="text-center">@report.CustomerId</td>
+                            <td class="text-center"><strong>@report.CustomerName</strong></td>
+                        }
+                        <td class="text-center">@report.ProductType</td>
+                        <td class="text-center">@report.ProductName</td>
+                        <td class="text-center"><span class="amount">@report.LoanAmount.ToString("C")</span></td>
+                        <td class="text-center"><span class="amount">@report.OutstandingBalance.ToString("C")</span></td>
+                        <td class="text-center"><span class="amount">@report.PaidAmount.ToString("C")</span></td>
 
-
-                            }
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="@(role == "Admin" ? "11" : "8")" class="text-center py-3">
-                            <i class="fas fa-inbox me-2"></i>No applications found.
-                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination Section - Reduced Gap -->
+    <!-- Pagination Section -->
     <div class="pagination-section">
-        <!-- Pagination Info -->
-        <div class="pagination-info" id="paginationInfo">
+        <div class="pagination-info" id="outstandingPaginationInfo">
             <!-- Pagination info will be generated by JavaScript -->
         </div>
-
-        <!-- Bootstrap Pagination -->
-        <nav aria-label="Application pagination">
-            <ul class="pagination" id="paginationContainer">
+        <nav aria-label="Outstanding report pagination">
+            <ul class="pagination" id="outstandingPaginationContainer">
                 <!-- Pagination buttons will be generated by JavaScript -->
             </ul>
         </nav>
     </div>
 </div>
 
-<!-- Loan Application Modal - Extra Large -->
-<div class="modal fade" id="loanApplicationModal" tabindex="-1" aria-labelledby="loanApplicationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <form id="loanApplicationForm" method="post" asp-action="ApplyForLoan" asp-controller="LoanApplication">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loanModalLabel">
-                        <i class="fas fa-file-signature me-2"></i>Loan Application Form
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-tag me-2"></i>Product Type
-                                    </label>
-                                    <select class="form-control form-select" id="productTypeDropdown" name="ProductType" required>
-                                        <option value="">-- Select Product Type --</option>
-                                        @foreach (var type in ViewBag.ProductTypes as List<string>)
-                                        {
-                                            <option value="@type">@type</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="LoanProductId" class="form-label">
-                                        <i class="fas fa-box me-2"></i>Product Name
-                                    </label>
-                                    <select asp-for="LoanProductId" class="form-control form-select" id="productNameDropdown" required>
-                                        <option value="">-- Select Product Name --</option>
-                                    </select>
-                                    <span asp-validation-for="LoanProductId" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+<script>
+    $(document).ready(function () {
+        // Initialize pagination
+        setTimeout(initializePagination, 100);
 
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="LoanAmount" class="form-label">
-                                        <i class="fas fa-rupee-sign me-2"></i>Loan Amount
-                                    </label>
-                                    <input asp-for="LoanAmount" type="number" class="form-control" placeholder="Enter loan amount" min="1" required />
-                                    <span asp-validation-for="LoanAmount" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="LoanTenure" class="form-label">
-                                        <i class="fas fa-hourglass-half me-2"></i>Tenure (months)
-                                    </label>
-                                    <input asp-for="LoanTenure" type="number" class="form-control" placeholder="Enter loan tenure" min="1" required />
-                                    <span asp-validation-for="LoanTenure" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row g-4 mt-3">
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Note:</strong> Please ensure all information is accurate before submitting your application.
-                                    You will receive a confirmation email once your application is processed.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
-                    </button>
-                    <button type="submit" class="btn-primary" name="submitType" value="Submit">
-                        <i class="fas fa-check-circle me-2"></i>Submit Application
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Process Application Modal - Extra Large -->
-<div class="modal fade" id="processApplicationModal" tabindex="-1" aria-labelledby="processApplicationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="processApplicationModalLabel">
-                    <i class="fas fa-file-signature me-2"></i>Loan Application Details
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-user me-2"></i>Application ID</label>
-                                <p id="processAppId" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-user me-2"></i>Customer ID</label>
-                                <p id="processCustId" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-user-tag me-2"></i>Customer Name</label>
-                                <p id="processName" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-id-card me-2"></i>KYC Status</label>
-                                <p id="processKycStatus" class="form-control-static"></p>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-percentage me-2"></i>Interest Rate</label>
-                                <p id="processIR" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-hourglass-half me-2"></i>Loan Tenure</label>
-                                <p id="processTenure" class="form-control-static"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-tag me-2"></i>Product Type</label>
-                                <p id="processProduct" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-box me-2"></i>Product Name</label>
-                                <p id="processProductName" class="form-control-static"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-rupee-sign me-2"></i>Loan Amount</label>
-                                <p id="processLoanAmount" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-calendar-alt me-2"></i>Application Date</label>
-                                <p id="processApplicationDate" class="form-control-static"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label"><i class="fas fa-info-circle me-2"></i>Current Status</label>
-                                <p id="processStatusText" class="form-control-static"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="processStatus" class="form-label"><i class="fas fa-edit me-2"></i>Update Status</label>
-                                <select id="processStatus" class="form-control form-select">
-                                    <option value="Approved">Approve</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Rejected">Reject</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Close
-                </button>
-                <button type="button" class="btn-primary" id="saveProcessStatusBtn" data-bs-dismiss="modal">
-                    <i class="fas fa-save me-2"></i>Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-        let currentPage = 1;
-        let rowsPerPage = parseInt(document.getElementById('rowsPerPage')?.value || 10);
-        let allRows = [];
-        let filteredRows = [];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeTable();
-
-            const errorMessage = '@TempData["Error"]';
-            if (errorMessage) {
-                alert(errorMessage);
-            }
-
-            document.getElementById('statusFilter').addEventListener('change', applyFilters);
-            document.getElementById('productFilter').addEventListener('change', applyFilters);
-
-            document.getElementById('rowsPerPage').addEventListener('change', changeRowsPerPage);
-            document.getElementById('searchInput').addEventListener('input', searchApplications);
+        // Export Table as PDF
+        $("#btnExport").click(function () {
+            exportToPDF('outstandingReportTable', 'Outstanding_Loans_Report');
         });
 
-        function initializeTable() {
-            allRows = Array.from(document.querySelectorAll('.application-row'));
+        // Apply Filters
+        $("#btnApplyFilter").click(function () {
             applyFilters();
-            updateTable();
-        }
+        });
 
-        function applyFilters() {
+        // Clear Filters
+        $("#btnClearFilter").click(function () {
+            clearFilters();
+        });
+    });
+
+    // Global variables for pagination
+    let currentPage = 1;
+    let rowsPerPage = 10; // Fixed rows per page
+    let allRows = [];
+    let filteredRows = [];
+
+    function initializePagination() {
+        allRows = Array.from(document.querySelectorAll('.report-row'));
+        filteredRows = [...allRows];
+        updateTable();
+        document.getElementById('productFilter').addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
           const searchTerm = document.getElementById('searchInput')?.value.toLowerCase();
-          const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
+          // const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
           const productFilter = document.getElementById('productFilter')?.value.toLowerCase();
 
           filteredRows = allRows.filter(row => {
             const cells = row.getElementsByTagName('td');
             if (cells.length === 0) return false;
 
-            const isAdmin = cells.length === 11;
+            const isAdmin = cells.length === 8;
             const productTypeIndex = isAdmin ? 3 : 1;
-            const statusIndex = isAdmin ? 9 : 7;
+            // const statusIndex = isAdmin ? 6 : 4;
 
             const productTypeText = cells[productTypeIndex]?.textContent.trim().toLowerCase() || '';
             const statusText = cells[statusIndex]?.textContent.trim().toLowerCase() || '';
-            const rowText = row.textContent.toLowerCase();
+            // const rowText = row.textContent.toLowerCase();
 
             const matchesSearch = !searchTerm || rowText.includes(searchTerm);
-            const matchesStatus = !statusFilter || statusText.includes(statusFilter);
+            // const matchesStatus = !statusFilter || statusText.includes(statusFilter);
             const matchesProduct = !productFilter || productTypeText.includes(productFilter);
 
-            return matchesSearch && matchesStatus && matchesProduct;
+            return matchesSearch && matchesProduct;
           });
 
           currentPage = 1;
           updateTable(); // This will reapply pagination
         }
 
+    function clearFilters() {
+        $("#loanTypeFilter").val("");
 
-        
+        filteredRows = [...allRows];
+        currentPage = 1;
+        updateTable();
+    }
 
-        function updateTable() {
-            allRows.forEach(row => row.style.display = 'none');
+    function updateTable() {
+        // Hide all rows first
+        allRows.forEach(row => row.style.display = 'none');
 
-            const totalRows = filteredRows.length;
-            const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+        // Calculate pagination
+        const totalRows = filteredRows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
 
-            for (let i = startIndex; i < endIndex; i++) {
-                if (filteredRows[i]) {
-                    filteredRows[i].style.display = '';
-                }
+        // Show current page rows
+        for (let i = startIndex; i < endIndex; i++) {
+            if (filteredRows[i]) {
+                filteredRows[i].style.display = '';
+            }
+        }
+
+        // Update pagination controls
+        updatePagination(totalPages, totalRows, startIndex, endIndex);
+    }
+
+    function updatePagination(totalPages, totalRows, startIndex, endIndex) {
+        const paginationContainer = document.getElementById('outstandingPaginationContainer');
+        const paginationInfo = document.getElementById('outstandingPaginationInfo');
+
+        // Clear existing pagination
+        paginationContainer.innerHTML = '';
+
+        if (totalPages <= 1) {
+            const singleBtn = createPaginationButton('1', 1, false, true);
+            paginationContainer.appendChild(singleBtn);
+        } else {
+            // First page button
+            const firstBtn = createPaginationButton('«', 1, currentPage === 1);
+            paginationContainer.appendChild(firstBtn);
+
+            // Previous page button
+            const prevBtn = createPaginationButton('‹', currentPage - 1, currentPage === 1);
+            paginationContainer.appendChild(prevBtn);
+
+            // Page number buttons
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
             }
 
-            updatePagination(totalPages, totalRows, startIndex, endIndex);
-        }
-
-        function updatePagination(totalPages, totalRows, startIndex, endIndex) {
-            const paginationContainer = document.getElementById('paginationContainer');
-            const paginationInfo = document.getElementById('paginationInfo');
-            paginationContainer.innerHTML = '';
-
-            if (totalPages <= 1) {
-                const singleBtn = createBootstrapPaginationButton('1', 1, false, true);
-                paginationContainer.appendChild(singleBtn);
-            } else {
-                paginationContainer.appendChild(createBootstrapPaginationButton('«', 1, currentPage === 1));
-                paginationContainer.appendChild(createBootstrapPaginationButton('‹', currentPage - 1, currentPage === 1));
-
-                const maxVisiblePages = 5;
-                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                if (endPage - startPage + 1 < maxVisiblePages) {
-                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
-                }
-
-                for (let i = startPage; i <= endPage; i++) {
-                    paginationContainer.appendChild(createBootstrapPaginationButton(i, i, false, i === currentPage));
-                }
-
-                paginationContainer.appendChild(createBootstrapPaginationButton('›', currentPage + 1, currentPage === totalPages));
-                paginationContainer.appendChild(createBootstrapPaginationButton('»', totalPages, currentPage === totalPages));
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = createPaginationButton(i, i, false, i === currentPage);
+                paginationContainer.appendChild(pageBtn);
             }
 
-            paginationInfo.innerHTML = totalRows > 0
-                ? `<i class="fas fa-info-circle"></i> Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries`
-                : `<i class="fas fa-info-circle"></i> No matching records found`;
+            // Next page button
+            const nextBtn = createPaginationButton('›', currentPage + 1, currentPage === totalPages);
+            paginationContainer.appendChild(nextBtn);
+
+            // Last page button
+            const lastBtn = createPaginationButton('»', totalPages, currentPage === totalPages);
+            paginationContainer.appendChild(lastBtn);
         }
 
-        function createBootstrapPaginationButton(text, page, disabled, active = false) {
-            const li = document.createElement('li');
-            li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
-            const button = document.createElement('a');
-            button.className = 'page-link';
-            button.innerHTML = text;
-            button.href = '#';
-            if (!disabled) {
-                button.onclick = (e) => {
-                    e.preventDefault();
-                    goToPage(page);
-                };
-            }
-            li.appendChild(button);
-            return li;
+        // Update pagination info
+        if (totalRows > 0) {
+            paginationInfo.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries
+            `;
+        } else {
+            paginationInfo.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                No matching records found
+            `;
+        }
+    }
+
+    function createPaginationButton(text, page, disabled, active = false) {
+        const li = document.createElement('li');
+        li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+
+        const button = document.createElement('a');
+        button.className = 'page-link';
+        button.innerHTML = text;
+        button.href = '#';
+
+        if (!disabled) {
+            button.onclick = (e) => {
+                e.preventDefault();
+                goToPage(page);
+            };
         }
 
-        function goToPage(page) {
-            currentPage = page;
-            updateTable();
-        }
+        li.appendChild(button);
+        return li;
+    }
 
-        function changeRowsPerPage() {
-            rowsPerPage = parseInt(document.getElementById('rowsPerPage').value);
-            currentPage = 1;
-            updateTable();
-        }
+    function goToPage(page) {
+        currentPage = page;
+        updateTable();
+    }
 
-        function searchApplications() {
-            currentPage = 1;
-            applyFilters();
-            updateTable();
-        }
+    function exportToPDF(tableId, filename) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-        
-        // Product type dropdown change handler
-        $('#productTypeDropdown').change(function () {
-            var selectedType = $(this).val();
-            var productNameDropdown = $('#productNameDropdown');
-            productNameDropdown.empty().append('<option value="">-- Loading... --</option>');
+        // Add title
+        doc.setFontSize(16);
+        doc.text('Outstanding Loans Report', 14, 15);
 
-            if (selectedType) {
-                $.getJSON('/LoanApplication/GetProductNamesByType', { productType: selectedType }, function (data) {
-                    productNameDropdown.empty().append('<option value="">-- Select Product Name --</option>');
-                    $.each(data, function (i, item) {
-                        productNameDropdown.append($('<option>', {
-                            value: item.value,
-                            text: item.text
-                        }));
-                    });
+        // Add date
+        doc.setFontSize(10);
+        doc.text('Generated on: ' + new Date().toLocaleDateString(), 14, 25);
+
+        // Get table data
+        const table = document.getElementById(tableId);
+        const headers = [];
+        const data = [];
+
+        // Extract headers
+        table.querySelectorAll('thead th').forEach(th => {
+            headers.push(th.textContent.trim());
+        });
+
+        // Extract visible rows data
+        table.querySelectorAll('tbody tr').forEach(tr => {
+            if (tr.style.display !== 'none') {
+                const row = [];
+                tr.querySelectorAll('td').forEach(td => {
+                    row.push(td.textContent.trim());
                 });
-            } else {
-                productNameDropdown.empty().append('<option value="">-- Select Product Name --</option>');
+                data.push(row);
             }
         });
 
-        // Load application details into modal
-        $(document).on('click', '.btn-process', function () {
-            const applicationId = $(this).data('id');
-            $.ajax({
-                url: '/LoanApplication/GetApplicationDetailsById',
-                type: 'GET',
-                data: { applicationId: applicationId },
-                success: function (data) {
-                    if (data) {
-                        $('#processAppId').text(data.applicationId);
-                        $('#processCustId').text(data.customerId);
-                        $('#processName').text(data.name);
-                        $('#processKycStatus').text(data.kycStatus);
-                        $('#processIR').text(data.interestRate);
-                        $('#processTenure').text(data.loanTenure + ' years');
-                        $('#processProduct').text(data.productType);
-                        $('#processProductName').text(data.productName);
-                        $('#processLoanAmount').text('₹' + data.loanAmount);
-                        $('#processApplicationDate').text(data.applicationDate);
-                        $('#processStatusText').text(data.approvalStatus);
-                        $('#processStatus').val(data.approvalStatus);
-                        $('#saveProcessStatusBtn').data('application-id', data.applicationId);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching application details:", error);
-                    alert("Failed to load application details.");
-                }
-            });
+        // Generate table
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            startY: 35,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2
+            },
+            headStyles: {
+                fillColor: [44, 62, 80],
+                textColor: 255
+            }
         });
 
-        // Save status updates
-        $('#saveProcessStatusBtn').on('click', function () {
-            const applicationId = $(this).data('application-id');
-            const newStatus = $('#processStatus').val();
-
-            $.ajax({
-                url: '/LoanApplication/UpdateStatus',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ applicationId: applicationId, status: newStatus }),
-                success: function (response) {
-                    alert(response.message);
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1000);
-                }
-            });
-        });
-    </script>
-}
+        // Save the PDF
+        const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+        doc.save(`${filename}_${timestamp}.pdf`);
+    }
+</script>
