@@ -1,88 +1,107 @@
-Error
-Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'currentPage' has already been declared
-    at b (jquery.min.js:2:866)
-    at He (jquery.min.js:2:48373)
-    at S.fn.init.append (jquery.min.js:2:49724)
-    at S.fn.init.<anonymous> (jquery.min.js:2:50816)
-    at $ (jquery.min.js:2:32425)
-    at S.fn.init.html (jquery.min.js:2:50494)
-    at Object.<anonymous> (jquery.min.js:2:85141)
-    at c (jquery.min.js:2:28327)
-    at Object.fireWith [as resolveWith] (jquery.min.js:2:29072)
-    at l (jquery.min.js:2:79901)
-2VM53:100  Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
-    at updatePagination (<anonymous>:100:39)
-    at updateTable (<anonymous>:92:9)
-    at applyFilters (<anonymous>:61:11)
-    at HTMLSelectElement.onchange (Report:1:1)
-@model List<BankLoanProject.Models.OutstandingReportViewModel>
+@model List<BankLoanProject.Models.RepaymentReportViewModel>
 @{
     var role = Context.Session.GetString("Role");
     Layout = null;
 }
 
-<!-- Outstanding Report Section -->
-<div id="outstanding" class="report-section table-container">
+<!-- Repayment Report Section -->
+<div id="repayment" class="report-section table-container">
     <div class="section-header">
         <div class="section-info">
-            @* <span class="badge bg-warning mb-2">Outstanding Reports</span> *@
+            @* <span class="badge bg-success mb-2">Repayment Reports</span> *@
             <h4 class="mb-2">
-                <i class="fas fa-money-bill-wave me-2"></i>
-                Outstanding Loans Report
+                <i class="fas fa-receipt me-2"></i>
+                Repayment Report
             </h4>
-            @* <p class="text-muted">Track outstanding loan balances and payment status.</p> *@
+            @* <p class="text-muted">Monitor loan repayment schedules and payment history.</p> *@
         </div>
         <div class="export-filter-controls">
             <button class="btn btn-export" id="btnExport">
                 <i class="fas fa-file-pdf"></i> Export PDF
             </button>
             <!-- Filter Dropdown -->
-            <div>
-                <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
-                <select id="productFilter" class="form-select filter-dropdown" onchange="applyFilters()">
-                    <option value="">All</option>
-                    <option value="Home">Home</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Vehicle">Vehicle</option>
-                </select>
+            <div class="d-flex gap-3 my-3">
+                <div>
+                    <label for="statusFilter" class="form-label"><i class="fas fa-filter me-1"></i>Status</label>
+                    <select id="statusFilter" class="form-select filter-dropdown" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+
+                    </select>
+                </div>
+                <div>
+                    <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
+                    <select id="productFilter" class="form-select filter-dropdown" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="Home">Home</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Vehicle">Vehicle</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="table-wrapper">
-        <table class="table table-bordered" id="outstandingReportTable">
+        <table class="table table-bordered" id="repaymentReportTable">
             <thead>
                 <tr>
-                    <th scope="col" class="col-loan-id">Loan ID</th>
+                    <th scope="col" class="col-repayment-id">Repayment ID</th>
                     @if (role == "Admin")
                     {
                         <th scope="col" class="col-customer-id">Customer ID</th>
                         <th scope="col" class="col-customer-name">Customer Name</th>
                     }
+                    <th scope="col" class="col-loan-id">Loan ID</th>
                     <th scope="col" class="col-product-type">Product Type</th>
                     <th scope="col" class="col-product-name">Product Name</th>
-                    <th scope="col" class="col-loan-amount">Loan Amount</th>
-                    <th scope="col" class="col-outstanding-balance">Outstanding Balance</th>
-                    <th scope="col" class="col-paid-amount">Paid Amount</th>
-
+                    <th scope="col" class="col-amount-due">Amount Due</th>
+                    <th scope="col" class="col-due-date">Due Date</th>
+                    <th scope="col" class="col-payment-date">Payment Date</th>
+                    <th scope="col" class="col-status">Status</th>
                 </tr>
             </thead>
             <tbody class="report-table-body">
                 @foreach (var report in Model)
                 {
                     <tr class="report-row">
-                        <td class="text-center"><strong>@report.LoanId</strong></td>
+                        <td class="text-center"><strong>@report.RepaymentId</strong></td>
                         @if (role == "Admin")
                         {
                             <td class="text-center">@report.CustomerId</td>
                             <td class="text-center"><strong>@report.CustomerName</strong></td>
                         }
+                        <td class="text-center">@report.LoanId</td>
                         <td class="text-center">@report.ProductType</td>
                         <td class="text-center">@report.ProductName</td>
-                        <td class="text-center"><span class="amount">@report.LoanAmount.ToString("C")</span></td>
-                        <td class="text-center"><span class="amount">@report.OutstandingBalance.ToString("C")</span></td>
-                        <td class="text-center"><span class="amount">@report.PaidAmount.ToString("C")</span></td>
-
+                        <td class="text-center"><span class="amount">@report.AmountDue.ToString("C")</span></td>
+                        <td class="text-center">@report.DueDate.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@(report.PaymentDate.HasValue? report.PaymentDate.Value.ToString("dd/MM/yyyy") : "Not Paid")</td>
+                        <td class="text-center">
+                            @{
+                                string statusClass = "";
+                                string statusIcon = "";
+                                switch (report.PaymentStatus?.ToUpper())
+                                {
+                                    case "COMPLETED":
+                                        statusClass = "status-completed";
+                                        statusIcon = "fas fa-check-circle";
+                                        break;
+                                    case "PENDING":
+                                        statusClass = "status-pending";
+                                        statusIcon = "fas fa-clock";
+                                        break;
+                                    default:
+                                        statusClass = "status-pending";
+                                        statusIcon = "fas fa-clock";
+                                        break;
+                                }
+                            }
+                            <span class="status-badge @statusClass">
+                                <i class="@statusIcon"></i>@report.PaymentStatus
+                            </span>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -91,11 +110,11 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
 
     <!-- Pagination Section -->
     <div class="pagination-section">
-        <div class="pagination-info" id="outstandingPaginationInfo">
+        <div class="pagination-info" id="repaymentPaginationInfo">
             <!-- Pagination info will be generated by JavaScript -->
         </div>
-        <nav aria-label="Outstanding report pagination">
-            <ul class="pagination" id="outstandingPaginationContainer">
+        <nav aria-label="Repayment report pagination">
+            <ul class="pagination" id="repaymentPaginationContainer">
                 <!-- Pagination buttons will be generated by JavaScript -->
             </ul>
         </nav>
@@ -109,7 +128,7 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
 
         // Export Table as PDF
         $("#btnExport").click(function () {
-            exportToPDF('outstandingReportTable', 'Outstanding_Loans_Report');
+            exportToPDF('repaymentReportTable', 'Repayment_Report');
         });
 
         // Apply Filters
@@ -133,31 +152,32 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
         allRows = Array.from(document.querySelectorAll('.report-row'));
         filteredRows = [...allRows];
         updateTable();
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
         document.getElementById('productFilter').addEventListener('change', applyFilters);
     }
 
     function applyFilters() {
           const searchTerm = document.getElementById('searchInput')?.value.toLowerCase();
-          // const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
+          const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
           const productFilter = document.getElementById('productFilter')?.value.toLowerCase();
 
           filteredRows = allRows.filter(row => {
             const cells = row.getElementsByTagName('td');
             if (cells.length === 0) return false;
 
-            const isAdmin = cells.length === 8;
-            const productTypeIndex = isAdmin ? 3 : 1;
-            // const statusIndex = isAdmin ? 6 : 4;
+            const isAdmin = cells.length === 10;
+            const productTypeIndex = isAdmin ? 4 : 2;
+            const statusIndex = isAdmin ? 9 : 7;
 
             const productTypeText = cells[productTypeIndex]?.textContent.trim().toLowerCase() || '';
             const statusText = cells[statusIndex]?.textContent.trim().toLowerCase() || '';
-            // const rowText = row.textContent.toLowerCase();
+            const rowText = row.textContent.toLowerCase();
 
             const matchesSearch = !searchTerm || rowText.includes(searchTerm);
-            // const matchesStatus = !statusFilter || statusText.includes(statusFilter);
+            const matchesStatus = !statusFilter || statusText.includes(statusFilter);
             const matchesProduct = !productFilter || productTypeText.includes(productFilter);
 
-            return matchesSearch && matchesProduct;
+            return matchesSearch && matchesStatus && matchesProduct;
           });
 
           currentPage = 1;
@@ -165,7 +185,8 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
         }
 
     function clearFilters() {
-        $("#loanTypeFilter").val("");
+        $("#statusFilter").val("");
+        $("#paymentDateFilter").val("");
 
         filteredRows = [...allRows];
         currentPage = 1;
@@ -194,8 +215,8 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
     }
 
     function updatePagination(totalPages, totalRows, startIndex, endIndex) {
-        const paginationContainer = document.getElementById('outstandingPaginationContainer');
-        const paginationInfo = document.getElementById('outstandingPaginationInfo');
+        const paginationContainer = document.getElementById('repaymentPaginationContainer');
+        const paginationInfo = document.getElementById('repaymentPaginationInfo');
 
         // Clear existing pagination
         paginationContainer.innerHTML = '';
@@ -280,7 +301,7 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
 
         // Add title
         doc.setFontSize(16);
-        doc.text('Outstanding Loans Report', 14, 15);
+        doc.text('Repayment Report', 14, 15);
 
         // Add date
         doc.setFontSize(10);
@@ -327,3 +348,4 @@ Uncaught SyntaxError: Failed to execute 'appendChild' on 'Node': Identifier 'cur
         doc.save(`${filename}_${timestamp}.pdf`);
     }
 </script>
+
