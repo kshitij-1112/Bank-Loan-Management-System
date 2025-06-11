@@ -1,215 +1,803 @@
-@section Scripts {
-    <script>
-        let currentPage = 1;
-        let rowsPerPage = parseInt(document.getElementById('rowsPerPage')?.value || 10);
-        let allRows = [];
-        let filteredRows = [];
+/* Loan Application Portal Styling - No Scroll, Compact Design */
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #16a085;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --info: #1abc9c;
+    --table-header-bg: linear-gradient(to right, #2c3e50, #3498db);
+    --pagination-border: #495057;
+    --pagination-bg: #f8f9fa;
+    --pagination-active-bg: #3498db;
+}
 
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeTable();
+body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px 0;
+    margin: 0;
+}
 
-            const errorMessage = '@TempData["Error"]';
-            if (errorMessage) {
-                alert(errorMessage);
-            }
+/* Header Container - Reduced height, increased width with margins */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 15px;
+    padding: 10px 25px; /* Reduced padding from 25px to 15px */
+    margin: 70px auto 30px auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 92%; /* Increased from 96% to 92% for more width with margins */
 
-            document.getElementById('rowsPerPage').addEventListener('change', changeRowsPerPage);
-            document.getElementById('searchInput').addEventListener('input', searchApplications);
-        });
+}
 
-        function initializeTable() {
-            allRows = Array.from(document.querySelectorAll('.application-row'));
-            applyFilters();
-            updateTable();
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 1.6rem; /* Reduced from 2rem */
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .dashboard-header h2 {
+        margin: 0;
+        font-size: 1.5rem; /* Reduced from 1.8rem */
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .dashboard-header p {
+        margin: 8px 0 0 0; /* Reduced from 10px to 8px */
+        opacity: 0.9;
+        font-size: 1rem; /* Reduced from 1.1rem */
+    }
+
+/* Apply Button Container - Centered */
+.apply-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 96%;
+}
+
+.btn-apply {
+    background: linear-gradient(135deg, var(--accent), var(--info));
+    color: white;
+    border: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 35px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(22, 160, 133, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+    .btn-apply:hover {
+        background: linear-gradient(135deg, var(--info), var(--accent));
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 6px 12px rgba(22, 160, 133, 0.3);
+        border-color: var(--info);
+    }
+
+
+
+/* Table Controls */
+.table-controls {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin: 20px auto;
+    max-width: 96%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 70px;
+}
+
+.rows-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .rows-control label {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .rows-control .form-select {
+        min-width: 80px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+        .rows-control .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
 
-        function applyFilters() {
-            let rows = [...allRows];
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            if (searchTerm !== '') {
-                rows = rows.filter(row => row.textContent.toLowerCase().includes(searchTerm));
-            }
-            filteredRows = rows;
+/* Controls Right Side */
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Bootstrap Search Input Group */
+.search-input-group {
+    width: 300px;
+}
+
+    .search-input-group .input-group-text {
+        background-color: var(--secondary);
+        color: white;
+        border: 2px solid var(--secondary);
+    }
+
+    .search-input-group .form-control {
+        border: 2px solid #e0e0e0;
+        border-left: none;
+    }
+
+        .search-input-group .form-control:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
 
-        function updateTable() {
-            allRows.forEach(row => row.style.display = 'none');
+/* Table Container - Compact, No Scroll */
+.table-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin: 20px auto;
+    max-width: 96%;
+    border: 4px solid var(--primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-            const totalRows = filteredRows.length;
-            const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+/* Table wrapper - Compact height */
+.table-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: visible;
+}
 
-            for (let i = startIndex; i < endIndex; i++) {
-                if (filteredRows[i]) {
-                    filteredRows[i].style.display = '';
-                }
-            }
+/* Table Styling - Responsive, No Fixed Width */
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    table-layout: auto; /* Auto layout for responsive columns */
+    font-size: 0.85rem; /* Smaller font for compact design */
+}
 
-            updatePagination(totalPages, totalRows, startIndex, endIndex);
+/* Responsive Column Widths - Percentage Based */
+.col-app-id {
+    width: 8%;
+    min-width: 70px;
+}
+
+.col-customer-id {
+    width: 7%;
+    min-width: 60px;
+}
+
+.col-name {
+    width: 12%;
+    min-width: 100px;
+}
+
+.col-product-type {
+    width: 12%;
+    min-width: 100px;
+}
+
+.col-product-name {
+    width: 15%;
+    min-width: 120px;
+}
+
+.col-interest {
+    width: 8%;
+    min-width: 60px;
+}
+
+.col-tenure {
+    width: 8%;
+    min-width: 70px;
+}
+
+.col-amount {
+    width: 12%;
+    min-width: 90px;
+}
+
+.col-date {
+    width: 10%;
+    min-width: 80px;
+}
+
+.col-status {
+    width: 10%;
+    min-width: 80px;
+}
+
+.col-actions {
+    width: 8%;
+    min-width: 70px;
+}
+
+/* Table Header - Compact Design */
+.table thead {
+    background: var(--table-header-bg);
+}
+
+    .table thead th {
+        background: var(--table-header-bg);
+        color: white;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 6px; /* Reduced padding */
+        text-transform: uppercase;
+        font-size: 0.7rem; /* Smaller font */
+        letter-spacing: 0.3px;
+        vertical-align: middle;
+        text-align: center;
+        white-space: nowrap;
+        line-height: 1.2;
+    }
+
+        .table thead th:first-child {
+            border-left: none;
         }
 
-        function updatePagination(totalPages, totalRows, startIndex, endIndex) {
-            const paginationContainer = document.getElementById('paginationContainer');
-            const paginationInfo = document.getElementById('paginationInfo');
-            paginationContainer.innerHTML = '';
-
-            if (totalPages <= 1) {
-                const singleBtn = createBootstrapPaginationButton('1', 1, false, true);
-                paginationContainer.appendChild(singleBtn);
-            } else {
-                paginationContainer.appendChild(createBootstrapPaginationButton('«', 1, currentPage === 1));
-                paginationContainer.appendChild(createBootstrapPaginationButton('‹', currentPage - 1, currentPage === 1));
-
-                const maxVisiblePages = 5;
-                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-                if (endPage - startPage + 1 < maxVisiblePages) {
-                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
-                }
-
-                for (let i = startPage; i <= endPage; i++) {
-                    paginationContainer.appendChild(createBootstrapPaginationButton(i, i, false, i === currentPage));
-                }
-
-                paginationContainer.appendChild(createBootstrapPaginationButton('›', currentPage + 1, currentPage === totalPages));
-                paginationContainer.appendChild(createBootstrapPaginationButton('»', totalPages, currentPage === totalPages));
-            }
-
-            paginationInfo.innerHTML = totalRows > 0
-                ? `<i class="fas fa-info-circle"></i> Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries`
-                : `<i class="fas fa-info-circle"></i> No matching records found`;
+        .table thead th:last-child {
+            border-right: none;
         }
 
-        function createBootstrapPaginationButton(text, page, disabled, active = false) {
-            const li = document.createElement('li');
-            li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
-            const button = document.createElement('a');
-            button.className = 'page-link';
-            button.innerHTML = text;
-            button.href = '#';
-            if (!disabled) {
-                button.onclick = (e) => {
-                    e.preventDefault();
-                    goToPage(page);
-                };
-            }
-            li.appendChild(button);
-            return li;
+        .table thead th i {
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 2px;
         }
 
-        function goToPage(page) {
-            currentPage = page;
-            updateTable();
+.table tbody td {
+    padding: 8px 6px; /* Reduced padding */
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    vertical-align: middle;
+    font-size: 0.8rem; /* Smaller font */
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+    .table tbody td:first-child {
+        border-left: none;
+    }
+
+    .table tbody td:last-child {
+        border-right: none;
+    }
+
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Application ID Styling */
+.application-id {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+/* Status Badge - Compact */
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.65rem;
+    text-align: center;
+    min-width: 60px;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.status-verified {
+    background-color: rgba(39, 174, 96, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.status-pending {
+    background-color: rgba(243, 156, 18, 0.2);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+.status-rejected {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+/* Action Buttons - Very Compact */
+.btn-action {
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 35px;
+    height: 35px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    gap: 1px;
+}
+
+    .btn-action i {
+        font-size: 0.7rem;
+        margin-bottom: 1px;
+    }
+
+    .btn-action span {
+        font-size: 0.55rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+    }
+
+.btn-process {
+    background-color: #2ed573;
+    color: white;
+    border-color: #2ed573;
+}
+
+    .btn-process:hover {
+        background-color: #26d065;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(46, 213, 115, 0.3);
+        border-color: #26d065;
+    }
+
+/* Pagination section - Minimal Gap */
+.pagination-section {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 8px 15px; /* Reduced padding */
+    margin-top: 0; /* Remove margin */
+}
+
+/* Enhanced Bootstrap Pagination Styling */
+.pagination {
+    margin: 4px 0 0 0; /* Reduced margin */
+    gap: 6px;
+    justify-content: center;
+}
+
+/* Pagination Info */
+.pagination-info {
+    color: var(--primary);
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 4px; /* Reduced margin */
+}
+
+.pagination .page-item .page-link {
+    color: #2c3e50;
+    background-color: var(--pagination-bg);
+    border: 3px solid #2c3e50;
+    padding: 8px 12px; /* Reduced padding */
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 40px;
+    min-height: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+    border-color: #6c757d;
+    color: #495057;
+    transform: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+    .pagination .page-item.disabled .page-link:hover {
+        background-color: #e9ecef;
+        border-color: #6c757d;
+        color: #495057;
+        transform: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+.pagination .page-item.active .page-link {
+    background-color: var(--pagination-active-bg);
+    color: white;
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(52, 152, 219, 0.4);
+    font-weight: 800;
+}
+
+    .pagination .page-item.active .page-link:hover {
+        background-color: var(--secondary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+/* Modal Styling - Extra Large */
+.modal-xl {
+    max-width: 1200px;
+}
+
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    border-bottom: none;
+    padding: 20px 30px;
+}
+
+.modal-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-body {
+    padding: 30px;
+    background-color: #fafafa;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+.form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+    .form-control:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        outline: none;
+    }
+
+.form-control-static {
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-weight: 500;
+    color: var(--dark);
+    margin: 0;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+/* Form Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: white;
+    border: 2px solid var(--secondary);
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        border-color: var(--primary);
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        color: white;
+        transform: translateY(-2px);
+        border-color: #5a6268;
+    }
+
+/* Close button styling */
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    opacity: 0.8;
+}
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+
+/* Bootstrap Grid Enhancements */
+.container-fluid {
+    padding: 0;
+}
+
+.row.g-4 {
+    --bs-gutter-x: 2rem;
+    --bs-gutter-y: 1.5rem;
+}
+
+.col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+/* Text danger styling */
+.text-danger {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    padding: 15px;
+    margin: 0;
+    border: none;
+}
+
+.alert-info {
+    background-color: rgba(26, 188, 156, 0.1);
+    color: var(--info);
+    border-left: 4px solid var(--info);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .table {
+        font-size: 0.8rem;
+    }
+
+        .table thead th {
+            padding: 6px 4px;
+            font-size: 0.65rem;
         }
 
-        function changeRowsPerPage() {
-            rowsPerPage = parseInt(document.getElementById('rowsPerPage').value);
-            currentPage = 1;
-            updateTable();
+        .table tbody td {
+            padding: 6px 4px;
+            font-size: 0.75rem;
         }
 
-        function searchApplications() {
-            currentPage = 1;
-            applyFilters();
-            updateTable();
+    .modal-xl {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        min-height: 120px;
+    }
+
+    .controls-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-input-group {
+        width: 100%;
+    }
+
+    .table-container {
+        max-width: 98%;
+    }
+
+    .dashboard-header {
+        margin: 15px auto;
+        padding: 20px;
+        max-width: 98%;
+    }
+
+        .dashboard-header h1 {
+            font-size: 1.5rem;
         }
 
-        function apply() {
-            let rows = [...allRows];
-            const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
-            const productFilter = document.getElementById('productFilter')?.value.toLowerCase();
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 
-            rows = rows.filter(row => {
-                const cells = row.getElementsByTagName('td');
-                if (cells.length === 0) return false;
+    .refresh-container,
+    .apply-button-container {
+        max-width: 98%;
+    }
 
-                const isAdmin = cells.length === 11;
-                const productTypeIndex = isAdmin ? 3 : 1;
-                const statusIndex = isAdmin ? 9 : 7;
+    .pagination {
+        gap: 4px;
+    }
 
-                const productTypeText = cells[productTypeIndex]?.textContent.trim().toLowerCase() || '';
-                const statusText = cells[statusIndex]?.textContent.trim().toLowerCase() || '';
-
-                const statusMatch = !statusFilter || statusText.includes(statusFilter);
-                const productMatch = !productFilter || productTypeText.includes(productFilter);
-
-                return statusMatch && productMatch;
-            });
-
-            filteredRows = rows;
-            updateTable();
+        .pagination .page-item .page-link {
+            padding: 6px 10px;
+            min-width: 35px;
+            min-height: 35px;
+            font-size: 0.8rem;
         }
 
-        // Product type dropdown change handler
-        $('#productTypeDropdown').change(function () {
-            var selectedType = $(this).val();
-            var productNameDropdown = $('#productNameDropdown');
-            productNameDropdown.empty().append('<option value="">-- Loading... --</option>');
+    .modal-xl {
+        max-width: 98%;
+    }
 
-            if (selectedType) {
-                $.getJSON('/LoanApplication/GetProductNamesByType', { productType: selectedType }, function (data) {
-                    productNameDropdown.empty().append('<option value="">-- Select Product Name --</option>');
-                    $.each(data, function (i, item) {
-                        productNameDropdown.append($('<option>', {
-                            value: item.value,
-                            text: item.text
-                        }));
-                    });
-                });
-            } else {
-                productNameDropdown.empty().append('<option value="">-- Select Product Name --</option>');
-            }
-        });
+    .modal-body {
+        padding: 20px;
+    }
+}
 
-        // Load application details into modal
-        $(document).on('click', '.btn-process', function () {
-            const applicationId = $(this).data('id');
-            $.ajax({
-                url: '/LoanApplication/GetApplicationDetailsById',
-                type: 'GET',
-                data: { applicationId: applicationId },
-                success: function (data) {
-                    if (data) {
-                        $('#processAppId').text(data.applicationId);
-                        $('#processCustId').text(data.customerId);
-                        $('#processName').text(data.name);
-                        $('#processKycStatus').text(data.kycStatus);
-                        $('#processIR').text(data.interestRate);
-                        $('#processTenure').text(data.loanTenure + ' years');
-                        $('#processProduct').text(data.productType);
-                        $('#processProductName').text(data.productName);
-                        $('#processLoanAmount').text('₹' + data.loanAmount);
-                        $('#processApplicationDate').text(data.applicationDate);
-                        $('#processStatusText').text(data.approvalStatus);
-                        $('#processStatus').val(data.approvalStatus);
-                        $('#saveProcessStatusBtn').data('application-id', data.applicationId);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching application details:", error);
-                    alert("Failed to load application details.");
-                }
-            });
-        });
+@media (max-width: 576px) {
+    .dashboard-header h1 {
+        font-size: 1.3rem;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-        // Save status updates
-        $('#saveProcessStatusBtn').on('click', function () {
-            const applicationId = $(this).data('application-id');
-            const newStatus = $('#processStatus').val();
+    .dashboard-header p {
+        font-size: 1rem;
+    }
 
-            $.ajax({
-                url: '/LoanApplication/UpdateStatus',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ applicationId: applicationId, status: newStatus }),
-                success: function (response) {
-                    alert(response.message);
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1000);
-                }
-            });
-        });
-    </script>
+    .table thead th {
+        padding: 4px 2px;
+        font-size: 0.6rem;
+    }
+
+    .table tbody td {
+        padding: 4px 2px;
+        font-size: 0.7rem;
+    }
+
+    .btn-action {
+        font-size: 0.55rem;
+        padding: 2px 4px;
+        min-width: 30px;
+        height: 30px;
+    }
+
+    .pagination .page-item .page-link {
+        padding: 4px 8px;
+        min-width: 30px;
+        min-height: 30px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Smooth transitions */
+* {
+    box-sizing: border-box;
+}
+
+/* Prevent layout shifts during transitions */
+.table-container,
+.table-controls {
+    transition: none !important;
 }
