@@ -1,351 +1,335 @@
-@model List<BankLoanProject.Models.RepaymentReportViewModel>
-@{
-    var role = Context.Session.GetString("Role");
-    Layout = null;
-}
+AddLoanProduct.cshtml
+@model BankLoanProject.Models.Entities.LoanProduct
 
-<!-- Repayment Report Section -->
-<div id="repayment" class="report-section table-container">
-    <div class="section-header">
-        <div class="section-info">
-            @* <span class="badge bg-success mb-2">Repayment Reports</span> *@
-            <h4 class="mb-2">
-                <i class="fas fa-receipt me-2"></i>
-                Repayment Report
-            </h4>
-            @* <p class="text-muted">Monitor loan repayment schedules and payment history.</p> *@
+<link rel="stylesheet" href="~/css/loan-product.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+
+<form asp-action="AddLoanProduct" method="post" id="addLoanForm">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProductType" class="form-label">
+                    <i class="fas fa-tag"></i> Loan Type
+                </label>
+                <input asp-for="ProductType" class="form-control" placeholder="Enter loan type" />
+                <span asp-validation-for="ProductType" class="text-danger"></span>
+            </div>
         </div>
-        <div class="export-filter-controls">
-            <button class="btn btn-export" id="btnExport">
-                <i class="fas fa-file-pdf"></i> Export PDF
-            </button>
-            <!-- Filter Dropdown -->
-            <div class="d-flex gap-3 my-3">
-                <div>
-                    <label for="statusFilter" class="form-label"><i class="fas fa-filter me-1"></i>Status</label>
-                    <select id="statusFilter" class="form-select filter-dropdown" onchange="applyFilters()">
-                        <option value="">All</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Pending">Pending</option>
-
-                    </select>
-                </div>
-                <div>
-                    <label for="productFilter" class="form-label"><i class="fas fa-filter me-1"></i>Product Type</label>
-                    <select id="productFilter" class="form-select filter-dropdown" onchange="applyFilters()">
-                        <option value="">All</option>
-                        <option value="Home">Home</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Vehicle">Vehicle</option>
-                    </select>
-                </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProductName" class="form-label">
+                    <i class="fas fa-file-signature"></i> Product Name
+                </label>
+                <input asp-for="ProductName" class="form-control" placeholder="Enter product name" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
             </div>
         </div>
     </div>
 
-    <div class="table-wrapper">
-        <table class="table table-bordered" id="repaymentReportTable">
-            <thead>
-                <tr>
-                    <th scope="col" class="col-repayment-id">Repayment ID</th>
-                    @if (role == "Admin")
-                    {
-                        <th scope="col" class="col-customer-id">Customer ID</th>
-                        <th scope="col" class="col-customer-name">Customer Name</th>
-                    }
-                    <th scope="col" class="col-loan-id">Loan ID</th>
-                    <th scope="col" class="col-product-type">Product Type</th>
-                    <th scope="col" class="col-product-name">Product Name</th>
-                    <th scope="col" class="col-amount-due">Amount Due</th>
-                    <th scope="col" class="col-due-date">Due Date</th>
-                    <th scope="col" class="col-payment-date">Payment Date</th>
-                    <th scope="col" class="col-status">Status</th>
-                </tr>
-            </thead>
-            <tbody class="report-table-body">
-                @foreach (var report in Model)
-                {
-                    <tr class="report-row">
-                        <td class="text-center"><strong>@report.RepaymentId</strong></td>
-                        @if (role == "Admin")
-                        {
-                            <td class="text-center">@report.CustomerId</td>
-                            <td class="text-center"><strong>@report.CustomerName</strong></td>
-                        }
-                        <td class="text-center">@report.LoanId</td>
-                        <td class="text-center">@report.ProductType</td>
-                        <td class="text-center">@report.ProductName</td>
-                        <td class="text-center"><span class="amount">@report.AmountDue.ToString("C")</span></td>
-                        <td class="text-center">@report.DueDate.ToString("dd/MM/yyyy")</td>
-                        <td class="text-center">@(report.PaymentDate.HasValue? report.PaymentDate.Value.ToString("dd/MM/yyyy") : "Not Paid")</td>
-                        <td class="text-center">
-                            @{
-                                string statusClass = "";
-                                string statusIcon = "";
-                                switch (report.PaymentStatus?.ToUpper())
-                                {
-                                    case "COMPLETED":
-                                        statusClass = "status-completed";
-                                        statusIcon = "fas fa-check-circle";
-                                        break;
-                                    case "PENDING":
-                                        statusClass = "status-pending";
-                                        statusIcon = "fas fa-clock";
-                                        break;
-                                    default:
-                                        statusClass = "status-pending";
-                                        statusIcon = "fas fa-clock";
-                                        break;
-                                }
-                            }
-                            <span class="status-badge @statusClass">
-                                <i class="@statusIcon"></i>@report.PaymentStatus
-                            </span>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination Section -->
-    <div class="pagination-section">
-        <div class="pagination-info" id="repaymentPaginationInfo">
-            <!-- Pagination info will be generated by JavaScript -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="InterestRate" class="form-label">
+                    <i class="fas fa-percentage"></i> Interest Rate (%)
+                </label>
+                <input asp-for="InterestRate" class="form-control" type="number" step="0.01" min="1" placeholder="Enter interest rate" />
+                <span asp-validation-for="InterestRate" class="text-danger"></span>
+            </div>
         </div>
-        <nav aria-label="Repayment report pagination">
-            <ul class="pagination" id="repaymentPaginationContainer">
-                <!-- Pagination buttons will be generated by JavaScript -->
-            </ul>
-        </nav>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Tenure" class="form-label">
+                    <i class="fas fa-calendar-alt"></i> Tenure (months)
+                </label>
+                <input asp-for="Tenure" class="form-control" min="1" placeholder="Enter tenure in months" />
+                <span asp-validation-for="Tenure" class="text-danger"></span>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function () {
-        // Initialize pagination
-        setTimeout(initializePagination, 100);
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="MinAmount" class="form-label">
+                    <i class="fas fa-money-bill-wave"></i> Minimum Amount
+                </label>
+                <input asp-for="MinAmount" class="form-control" type="number" step="0.01" min="1" placeholder="Enter minimum amount" />
+                <span asp-validation-for="MinAmount" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="MaxAmount" class="form-label">
+                    <i class="fas fa-money-bill-wave"></i> Maximum Amount
+                </label>
+                <input asp-for="MaxAmount" class="form-control" type="number" step="0.01" min="1" placeholder="Enter maximum amount" />
+                <span asp-validation-for="MaxAmount" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
 
-        // Export Table as PDF
-        $("#btnExport").click(function () {
-            exportToPDF('repaymentReportTable', 'Repayment_Report');
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-plus"></i> Add Loan Product
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $('#addLoanForm').submit(function (e) {
+            e.preventDefault();
+
+            const submitBtn = $(this).find('.btn-primary');
+            const originalText = submitBtn.html();
+            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Adding...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: '/LoanProduct/AddLoanProduct',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#addLoanModal').modal('hide');
+                    //window.location.href = '/LoanProduct/Index';
+                    // Preserve the current loan type in localStorage before reload
+                    const currentType = localStorage.getItem('activeLoanType') || 'personal';
+                    localStorage.setItem('activeLoanType', currentType);
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error adding loan product. Please try again.');
+                    submitBtn.html(originalText);
+                    submitBtn.prop('disabled', false);
+                }
+            });
         });
+    </script>@model BankLoanProject.Models.Entities.LoanProduct
 
-        // Apply Filters
-        $("#btnApplyFilter").click(function () {
-            applyFilters();
+<link rel="stylesheet" href="~/css/loan-product.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+
+<form asp-action="UpdateLoanProduct" method="post" id="updateLoanForm">
+    <input type="hidden" asp-for="LoanProductId" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProductType" class="form-label">
+                    <i class="fas fa-tag"></i> Loan Type
+                </label>
+                <input asp-for="ProductType" class="form-control" readonly />
+                <span asp-validation-for="ProductType" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProductName" class="form-label" required>
+                    <i class="fas fa-file-signature"></i> Product Name
+                </label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="InterestRate" class="form-label">
+                    <i class="fas fa-percentage"></i> Interest Rate (%)
+                </label>
+                <input asp-for="InterestRate" class="form-control" type="number" step="0.01" min="1" />
+                <span asp-validation-for="InterestRate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Tenure" class="form-label">
+                    <i class="fas fa-calendar-alt"></i> Tenure (months)
+                </label>
+                <input asp-for="Tenure" min="1" class="form-control" />
+                <span asp-validation-for="Tenure" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="MinAmount" class="form-label">   <i class="fas fa-money-bill-wave"></i>       </label>
+                <input asp-for="MinAmount" class="form-control" type="number" step="0.01" min="1" />
+                <span asp-validation-for="MinAmount" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="MaxAmount" class="form-label">
+                    <i class="fas fa-money-bill-wave"></i> Maximum Amount</label>
+                <input asp-for="MaxAmount" class="form-control" type="number" step="0.01" min="1" />
+                <span asp-validation-for="MaxAmount" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    @* <script> *@
+    @*             $(document).on('submit', '#updateLoanForm', function (e) { *@
+
+    @*         e.preventDefault(); *@
+
+    @*         const form = $(this); *@
+
+    @*         const submitBtn = form.find('.btn-primary'); *@
+
+    @*         const originalText = submitBtn.html(); *@
+
+    @*         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Updating...'); *@
+
+    @*         submitBtn.prop('disabled', true); *@
+
+    @*         $.ajax({ *@
+
+    @*             type: 'POST', *@
+
+    @*             url: '/LoanProduct/UpdateLoanProduct', *@
+
+    @*             data: form.serialize(), *@
+
+    @*             success: function (response) { *@
+
+    @*                 try { *@
+
+    @*                     const json = JSON.parse(response); *@
+
+    @*                     if (json.success) { *@
+
+    @*                         $('#updateLoanModal').modal('hide'); *@
+
+    @*                         const currentType = localStorage.getItem('activeLoanType') || 'personal'; *@
+
+    @*                         localStorage.setItem('activeLoanType', currentType); *@
+
+    @*                         location.reload(); *@
+
+    @*                         return; *@
+
+    @*                     } *@
+
+    @*                 } catch (e) { *@
+
+    @*                     // It’s a partial view with validation errors *@
+
+    @*                     $('#updateModalBody').html(response); *@
+
+    @*                 } *@
+
+    @*                 submitBtn.html(originalText); *@
+
+    @*                 submitBtn.prop('disabled', false); *@
+
+    @*             }, *@
+
+    @*             error: function () { *@
+
+    @*                 alert('Error updating loan product. Please try again.'); *@
+
+    @*                 submitBtn.html(originalText); *@
+
+    @*                 submitBtn.prop('disabled', false); *@
+
+    @*             } *@
+
+    @*         }); *@
+
+    @*     }); *@
+
+    @* </script> *@
+
+
+    <script>
+        $(document).on('submit', '#updateLoanForm', function (e) {
+            e.preventDefault();
+
+            // const form = $(this);
+
+            // Trigger HTML5 validation
+            // if (!form[0].checkValidity()) {
+            //     form[0].reportValidity();
+            //     return;
+            // }
+
+            const submitBtn = form.find('.btn-primary');
+            const originalText = submitBtn.html();
+
+            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Updating...');
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: '/LoanProduct/UpdateLoanProduct',
+                data: form.serialize(),
+                success: function (response) {
+                    try {
+                        const json = JSON.parse(response);
+                        if (json.success) {
+                            $('#updateLoanModal').modal('hide');
+                            const currentType = localStorage.getItem('activeLoanType') || 'personal';
+                            localStorage.setItem('activeLoanType', currentType);
+                            location.reload();
+                            return;
+                        }
+                    } catch (e) {
+                        $('#updateModalBody').html(response);
+                    }
+
+                    submitBtn.html(originalText);
+                    submitBtn.prop('disabled', false);
+                },
+                error: function () {
+                    alert('Error updating loan product. Please try again.');
+                    submitBtn.html(originalText);
+                    submitBtn.prop('disabled', false);
+                }
+            });
         });
+    </script>
 
-        // Clear Filters
-        $("#btnClearFilter").click(function () {
-            clearFilters();
-        });
-    });
 
-    // Global variables for pagination
-    let currentPage = 1;
-    let rowsPerPage = 10; // Fixed rows per page
-    let allRows = [];
-    let filteredRows = [];
 
-    function initializePagination() {
-        allRows = Array.from(document.querySelectorAll('.report-row'));
-        filteredRows = [...allRows];
-        updateTable();
-        document.getElementById('statusFilter').addEventListener('change', applyFilters);
-        document.getElementById('productFilter').addEventListener('change', applyFilters);
-    }
 
-    function applyFilters() {
-          const searchTerm = document.getElementById('searchInput')?.value.toLowerCase();
-          const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase();
-          const productFilter = document.getElementById('productFilter')?.value.toLowerCase();
 
-          filteredRows = allRows.filter(row => {
-            const cells = row.getElementsByTagName('td');
-            if (cells.length === 0) return false;
 
-            const isAdmin = cells.length === 10;
-            const productTypeIndex = isAdmin ? 4 : 2;
-            const statusIndex = isAdmin ? 9 : 7;
+}
 
-            const productTypeText = cells[productTypeIndex]?.textContent.trim().toLowerCase() || '';
-            const statusText = cells[statusIndex]?.textContent.trim().toLowerCase() || '';
-            const rowText = row.textContent.toLowerCase();
 
-            const matchesSearch = !searchTerm || rowText.includes(searchTerm);
-            const matchesStatus = !statusFilter || statusText.includes(statusFilter);
-            const matchesProduct = !productFilter || productTypeText.includes(productFilter);
+}
 
-            return matchesSearch && matchesStatus && matchesProduct;
-          });
-
-          currentPage = 1;
-          updateTable(); // This will reapply pagination
-        }
-
-    function clearFilters() {
-        $("#statusFilter").val("");
-        $("#paymentDateFilter").val("");
-
-        filteredRows = [...allRows];
-        currentPage = 1;
-        updateTable();
-    }
-
-    function updateTable() {
-        // Hide all rows first
-        allRows.forEach(row => row.style.display = 'none');
-
-        // Calculate pagination
-        const totalRows = filteredRows.length;
-        const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
-
-        // Show current page rows
-        for (let i = startIndex; i < endIndex; i++) {
-            if (filteredRows[i]) {
-                filteredRows[i].style.display = '';
-            }
-        }
-
-        // Update pagination controls
-        updatePagination(totalPages, totalRows, startIndex, endIndex);
-    }
-
-    function updatePagination(totalPages, totalRows, startIndex, endIndex) {
-        const paginationContainer = document.getElementById('repaymentPaginationContainer');
-        const paginationInfo = document.getElementById('repaymentPaginationInfo');
-
-        // Clear existing pagination
-        paginationContainer.innerHTML = '';
-
-        if (totalPages <= 1) {
-            const singleBtn = createPaginationButton('1', 1, false, true);
-            paginationContainer.appendChild(singleBtn);
-        } else {
-            // First page button
-            const firstBtn = createPaginationButton('«', 1, currentPage === 1);
-            paginationContainer.appendChild(firstBtn);
-
-            // Previous page button
-            const prevBtn = createPaginationButton('‹', currentPage - 1, currentPage === 1);
-            paginationContainer.appendChild(prevBtn);
-
-            // Page number buttons
-            const maxVisiblePages = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = createPaginationButton(i, i, false, i === currentPage);
-                paginationContainer.appendChild(pageBtn);
-            }
-
-            // Next page button
-            const nextBtn = createPaginationButton('›', currentPage + 1, currentPage === totalPages);
-            paginationContainer.appendChild(nextBtn);
-
-            // Last page button
-            const lastBtn = createPaginationButton('»', totalPages, currentPage === totalPages);
-            paginationContainer.appendChild(lastBtn);
-        }
-
-        // Update pagination info
-        if (totalRows > 0) {
-            paginationInfo.innerHTML = `
-                <i class="fas fa-info-circle"></i>
-                Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries
-            `;
-        } else {
-            paginationInfo.innerHTML = `
-                <i class="fas fa-info-circle"></i>
-                No matching records found
-            `;
-        }
-    }
-
-    function createPaginationButton(text, page, disabled, active = false) {
-        const li = document.createElement('li');
-        li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
-
-        const button = document.createElement('a');
-        button.className = 'page-link';
-        button.innerHTML = text;
-        button.href = '#';
-
-        if (!disabled) {
-            button.onclick = (e) => {
-                e.preventDefault();
-                goToPage(page);
-            };
-        }
-
-        li.appendChild(button);
-        return li;
-    }
-
-    function goToPage(page) {
-        currentPage = page;
-        updateTable();
-    }
-
-    function exportToPDF(tableId, filename) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // Add title
-        doc.setFontSize(16);
-        doc.text('Repayment Report', 14, 15);
-
-        // Add date
-        doc.setFontSize(10);
-        doc.text('Generated on: ' + new Date().toLocaleDateString(), 14, 25);
-
-        // Get table data
-        const table = document.getElementById(tableId);
-        const headers = [];
-        const data = [];
-
-        // Extract headers
-        table.querySelectorAll('thead th').forEach(th => {
-            headers.push(th.textContent.trim());
-        });
-
-        // Extract visible rows data
-        table.querySelectorAll('tbody tr').forEach(tr => {
-            if (tr.style.display !== 'none') {
-                const row = [];
-                tr.querySelectorAll('td').forEach(td => {
-                    row.push(td.textContent.trim());
-                });
-                data.push(row);
-            }
-        });
-
-        // Generate table
-        doc.autoTable({
-            head: [headers],
-            body: data,
-            startY: 35,
-            styles: {
-                fontSize: 8,
-                cellPadding: 2
-            },
-            headStyles: {
-                fillColor: [44, 62, 80],
-                textColor: 255
-            }
-        });
-
-        // Save the PDF
-        const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
-        doc.save(`${filename}_${timestamp}.pdf`);
-    }
-</script>
-
+UpdateLoanProduct.cshtml
