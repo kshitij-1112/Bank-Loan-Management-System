@@ -1,3 +1,36 @@
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoanModal">
+  Add Product
+</button>
+
+<div class="modal fade" id="addLoanModal" tabindex="-1" aria-labelledby="addLoanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="addLoanModalLabel" class="modal-title">Add Loan Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if (TempData["ProductError"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ProductError"]
+            </div>
+        }
+        @if (TempData["AmountError"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["AmountError"]
+            </div>
+        }
+        <!-- Your form here -->
+        <form asp-action="AddLoanProduct" method="post" id="addLoanForm">
+          <!-- form fields -->
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -5,7 +38,6 @@
             const amountError = '@TempData["AmountError"]';
 
             if (productError || amountError) {
-                // If there were server-side validation messages, show the modal immediately
                 const modal = new bootstrap.Modal(document.getElementById('addLoanModal'), {});
                 modal.show();
             }
