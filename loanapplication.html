@@ -1,156 +1,35 @@
-public IActionResult AddLoanProduct(LoanProduct product)
-{
-    if (!ModelState.IsValid)
-    {
-        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-        {
-            Console.WriteLine("Validation error: " + error.ErrorMessage);
-        }
-        return RedirectToAction("Index");
-    }
-
-    if (_service.IsDuplicateProduct(product.ProductType, product.ProductName))
-    {
-        TempData["ProductError"] = "Product name already exists for this loan type.";
-        return RedirectToAction("Index");
-    }
-    if (product.MinAmount == product.MaxAmount)
-    {
-        TempData["AmountError"] = "Minimum and maximum amounts cannot be the same."  ;
-        return RedirectToAction("Index");// or PartialView(...) for update
-    }
-    else if (product.MinAmount > product.MaxAmount)
-    {
-        TempData["AmountError"] = "Minimum amount should be less than maximun amount .";
-        return RedirectToAction("Index");
-    }
-
-@model BankLoanProject.Models.Entities.LoanProduct
-
-<link rel="stylesheet" href="~/css/loan-product.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-
-
-<form asp-action="AddLoanProduct" method="post" id="addLoanForm">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="ProductType" class="form-label">
-                    <i class="fas fa-tag"></i> Loan Type
-                </label>
-                <input asp-for="ProductType" class="form-control" placeholder="Enter loan type" />
-                <span asp-validation-for="ProductType" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="ProductName" class="form-label">
-                    <i class="fas fa-file-signature"></i> Product Name
-                </label>
-                <input asp-for="ProductName" class="form-control" placeholder="Enter product name" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="InterestRate" class="form-label">
-                    <i class="fas fa-percentage"></i> Interest Rate (%)
-                </label>
-                <input asp-for="InterestRate" class="form-control" type="number" step="0.01" min="1" placeholder="Enter interest rate" />
-                <span asp-validation-for="InterestRate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="Tenure" class="form-label">
-                    <i class="fas fa-calendar-alt"></i> Tenure (months)
-                </label>
-                <input asp-for="Tenure" class="form-control" min="1" placeholder="Enter tenure in months" />
-                <span asp-validation-for="Tenure" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="MinAmount" class="form-label">
-                    <i class="fas fa-money-bill-wave"></i> Minimum Amount
-                </label>
-                <input asp-for="MinAmount" class="form-control" type="number" step="0.01" min="1" placeholder="Enter minimum amount" />
-                <span asp-validation-for="MinAmount" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="MaxAmount" class="form-label">
-                    <i class="fas fa-money-bill-wave"></i> Maximum Amount
-                </label>
-                <input asp-for="MaxAmount" class="form-control" type="number" step="0.01" min="1" placeholder="Enter maximum amount" />
-                <span asp-validation-for="MaxAmount" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <button type="button" class="btn-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times"></i> Cancel
-        </button>
-        <button type="submit" class="btn-primary">
-            <i class="fas fa-plus"></i> Add Loan Product
-        </button>
-    </div>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-                const productError = '@TempData["ProductError"]';
-                const amountError = '@TempData["AmountError"]';
-
-                if (productError) {
-                    alert(productError);
-                } else if (amountError) {
-                    alert(amountError);
-                }
-            });
-
+<script>
+    $(document).ready(function () {
         $('#addLoanForm').submit(function (e) {
             e.preventDefault();
 
             const submitBtn = $(this).find('.btn-primary');
             const originalText = submitBtn.html();
+
             submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Adding...');
             submitBtn.prop('disabled', true);
 
-            $.ajax({
+            $.ajax({ 
                 type: 'POST',
-                url: '/LoanProduct/AddLoanProduct',
-                data: $(this).serialize(),
+                url: "/LoanProduct/AddLoanProduct",
+                data: $(this).serialize(), 
                 success: function () {
-                    $('#addLoanModal').modal('hide');
-                    //window.location.href = '/LoanProduct/Index';
-                    // Preserve the current loan type in localStorage before reload
-                    const currentType = localStorage.getItem('activeLoanType') || 'personal';
-                    localStorage.setItem('activeLoanType', currentType);
+                    // Hide modal with Bootstrap 5's API
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addLoanModal')) ||
+                                   new bootstrap.Modal(document.getElementById('addLoanModal'));
+
+                    modal.hide();
+
+                    // Reload page afterwards
                     location.reload();
                 },
-                error: function() {
+                error: function () {
                     alert('Error adding loan product. Please try again.');
+
                     submitBtn.html(originalText);
                     submitBtn.prop('disabled', false);
                 }
             });
         });
-    </script>
-}
+    });
+</script>
