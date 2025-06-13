@@ -1,35 +1,14 @@
-<script>
-    $(document).ready(function () {
-        $('#addLoanForm').submit(function (e) {
-            e.preventDefault();
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const productError = '@TempData["ProductError"]';
+            const amountError = '@TempData["AmountError"]';
 
-            const submitBtn = $(this).find('.btn-primary');
-            const originalText = submitBtn.html();
-
-            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Adding...');
-            submitBtn.prop('disabled', true);
-
-            $.ajax({ 
-                type: 'POST',
-                url: "/LoanProduct/AddLoanProduct",
-                data: $(this).serialize(), 
-                success: function () {
-                    // Hide modal with Bootstrap 5's API
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('addLoanModal')) ||
-                                   new bootstrap.Modal(document.getElementById('addLoanModal'));
-
-                    modal.hide();
-
-                    // Reload page afterwards
-                    location.reload();
-                },
-                error: function () {
-                    alert('Error adding loan product. Please try again.');
-
-                    submitBtn.html(originalText);
-                    submitBtn.prop('disabled', false);
-                }
-            });
+            if (productError || amountError) {
+                // If there were server-side validation messages, show the modal immediately
+                const modal = new bootstrap.Modal(document.getElementById('addLoanModal'), {});
+                modal.show();
+            }
         });
-    });
-</script>
+    </script>
+}
